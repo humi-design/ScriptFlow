@@ -1,0 +1,238 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Settings - ScriptFlow{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Settings</h1>
+    
+    <!-- General -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">General</h2>
+        <div class="p-6 rounded-2xl bg-card border border-border space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Default Script Settings</h3>
+                    <p class="text-sm text-text-secondary">Set your preferred defaults for new scripts</p>
+                </div>
+                <svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Auto-save</h3>
+                    <p class="text-sm text-text-secondary">Automatically save your work every 30 seconds</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-accent" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform translate-x-5"></span>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Language</h3>
+                    <p class="text-sm text-text-secondary">Choose your preferred language</p>
+                </div>
+                <select class="px-4 py-2 rounded-xl bg-secondary border border-border">
+                    <option>English</option>
+                    <option>Spanish</option>
+                    <option>French</option>
+                    <option>German</option>
+                </select>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Teleprompter -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Teleprompter</h2>
+        <div class="p-6 rounded-2xl bg-card border border-border space-y-6">
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-medium">Default Font Size</h3>
+                        <p class="text-sm text-text-secondary">Starting font size for scripts</p>
+                    </div>
+                    <span class="text-accent font-medium">32px</span>
+                </div>
+                <input type="range" min="16" max="64" value="32" class="w-full accent-accent">
+            </div>
+            
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="font-medium">Default Scroll Speed</h3>
+                        <p class="text-sm text-text-secondary">Starting scroll speed for new sessions</p>
+                    </div>
+                    <span class="text-accent font-medium">50%</span>
+                </div>
+                <input type="range" min="10" max="100" value="50" class="w-full accent-accent">
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Mirror Mode</h3>
+                    <p class="text-sm text-text-secondary">Flip text for use with teleprompter mirrors</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-secondary" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform"></span>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Show Reading Guide</h3>
+                    <p class="text-sm text-text-secondary">Display a horizontal guide line</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-accent" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform translate-x-5"></span>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Keep Screen Awake</h3>
+                    <p class="text-sm text-text-secondary">Prevent screen from sleeping during use</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-accent" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform translate-x-5"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Notifications -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Notifications</h2>
+        <div class="p-6 rounded-2xl bg-card border border-border space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Script Reminders</h3>
+                    <p class="text-sm text-text-secondary">Get reminded about your scheduled scripts</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-accent" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform translate-x-5"></span>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Email Notifications</h3>
+                    <p class="text-sm text-text-secondary">Receive updates via email</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-secondary" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform"></span>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Weekly Digest</h3>
+                    <p class="text-sm text-text-secondary">Summary of your script activity</p>
+                </div>
+                <button class="relative w-12 h-7 rounded-full bg-accent" onclick="this.classList.toggle('bg-accent'); this.classList.toggle('bg-secondary');">
+                    <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform translate-x-5"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Keyboard Shortcuts -->
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Keyboard Shortcuts</h2>
+        <div class="p-6 rounded-2xl bg-card border border-border">
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span>Play / Pause</span>
+                    <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">Space</kbd>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Increase Speed</span>
+                    <div class="flex space-x-2">
+                        <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">↑</kbd>
+                        <span class="text-text-secondary">or</span>
+                        <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">W</kbd>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Decrease Speed</span>
+                    <div class="flex space-x-2">
+                        <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">↓</kbd>
+                        <span class="text-text-secondary">or</span>
+                        <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">S</kbd>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Command Palette</span>
+                    <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">⌘K</kbd>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Save Script</span>
+                    <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">⌘S</kbd>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Exit Fullscreen</span>
+                    <kbd class="px-3 py-1.5 bg-secondary rounded-lg border border-border font-mono text-sm">Esc</kbd>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Data -->
+    <section>
+        <h2 class="text-xl font-semibold mb-4">Data & Privacy</h2>
+        <div class="p-6 rounded-2xl bg-card border border-border space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Export Scripts</h3>
+                    <p class="text-sm text-text-secondary">Download all your scripts as a ZIP file</p>
+                </div>
+                <button class="px-4 py-2 border border-border rounded-xl hover:bg-secondary transition-colors">
+                    Export
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Import Scripts</h3>
+                    <p class="text-sm text-text-secondary">Import scripts from other sources</p>
+                </div>
+                <button class="px-4 py-2 border border-border rounded-xl hover:bg-secondary transition-colors">
+                    Import
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium">Clear Cache</h3>
+                    <p class="text-sm text-text-secondary">Free up storage space</p>
+                </div>
+                <button class="px-4 py-2 border border-border rounded-xl hover:bg-secondary transition-colors">
+                    Clear
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+    // Toggle switch functionality
+    document.querySelectorAll('button').forEach(btn => {
+        if (btn.querySelector('.w-5.h-5.bg-white')) {
+            btn.addEventListener('click', function() {
+                const dot = this.querySelector('span');
+                if (this.classList.contains('bg-accent')) {
+                    gsap.to(dot, { x: 0, duration: 0.2 });
+                } else {
+                    gsap.to(dot, { x: 20, duration: 0.2 });
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

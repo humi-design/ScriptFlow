@@ -1,0 +1,234 @@
+/**
+ * ScriptFlow - CSS Variables
+ * Design tokens and theme system
+ */
+
+:root {
+    /* Primary Colors */
+    --color-primary: #090909;
+    --color-secondary: #111111;
+    --color-card: #171717;
+    --color-border: #2B2B2B;
+    --color-border-light: #3a3a3a;
+    
+    /* Text Colors */
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #B5B5B5;
+    --color-text-muted: #6B6B6B;
+    
+    /* Accent Colors */
+    --color-accent: #667EEA;
+    --color-accent-end: #764BA2;
+    --color-accent-hover: #7C8DF5;
+    
+    /* Status Colors */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+    --color-info: #3B82F6;
+    
+    /* Background Colors */
+    --bg-primary: #090909;
+    --bg-secondary: #111111;
+    --bg-card: #171717;
+    --bg-overlay: rgba(0, 0, 0, 0.8);
+    --bg-glass: rgba(17, 17, 17, 0.8);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.3);
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-3xl: 32px;
+    --radius-full: 9999px;
+    
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+    
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    
+    /* Font Sizes */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-6xl: 3.75rem;
+    
+    /* Font Weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+    
+    /* Line Heights */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    --leading-loose: 2;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 400ms ease;
+    
+    /* Z-Index Scale */
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-fixed: 30;
+    --z-modal-backdrop: 40;
+    --z-modal: 50;
+    --z-popover: 60;
+    --z-tooltip: 70;
+    --z-toast: 80;
+}
+
+/* Theme: Light */
+[data-theme="light"] {
+    --color-primary: #FFFFFF;
+    --color-secondary: #F5F5F5;
+    --color-card: #FFFFFF;
+    --color-border: #E5E5E5;
+    --color-text-primary: #1A1A1A;
+    --color-text-secondary: #6B6B6B;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F5F5F5;
+    --bg-card: #FFFFFF;
+    --bg-overlay: rgba(255, 255, 255, 0.9);
+    --bg-glass: rgba(255, 255, 255, 0.8);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Theme: OLED */
+[data-theme="oled"] {
+    --color-primary: #000000;
+    --color-secondary: #0A0A0A;
+    --color-card: #111111;
+    --bg-primary: #000000;
+    --bg-secondary: #0A0A0A;
+    --bg-card: #111111;
+}
+
+/* Theme: Ocean */
+[data-theme="ocean"] {
+    --color-primary: #0A1628;
+    --color-secondary: #0F2744;
+    --color-card: #143660;
+    --color-border: #1E4A7D;
+    --color-accent: #00D4FF;
+    --color-accent-end: #0099CC;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #A0D4FF;
+    --bg-primary: #0A1628;
+    --bg-secondary: #0F2744;
+    --bg-card: #143660;
+}
+
+/* Theme: Emerald */
+[data-theme="emerald"] {
+    --color-primary: #0A1F1A;
+    --color-secondary: #0F3329;
+    --color-card: #144738;
+    --color-border: #1E6B54;
+    --color-accent: #10B981;
+    --color-accent-end: #059669;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #A0F0D8;
+    --bg-primary: #0A1F1A;
+    --bg-secondary: #0F3329;
+    --bg-card: #144738;
+}
+
+/* Theme: Purple */
+[data-theme="purple"] {
+    --color-primary: #1A0A2E;
+    --color-secondary: #2D1452;
+    --color-card: #402076;
+    --color-border: #5A3099;
+    --color-accent: #A855F7;
+    --color-accent-end: #7C3AED;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #D8B4FE;
+    --bg-primary: #1A0A2E;
+    --bg-secondary: #2D1452;
+    --bg-card: #402076;
+}
+
+/* Theme: Sunset */
+[data-theme="sunset"] {
+    --color-primary: #1A0A0A;
+    --color-secondary: #331515;
+    --color-card: #4D2020;
+    --color-border: #6B3030;
+    --color-accent: #FF8A65;
+    --color-accent-end: #FF5722;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #FFCCBC;
+    --bg-primary: #1A0A0A;
+    --bg-secondary: #331515;
+    --bg-card: #4D2020;
+}
+
+/* Theme: Sepia */
+[data-theme="sepia"] {
+    --color-primary: #F4ECD8;
+    --color-secondary: #E8DFC8;
+    --color-card: #DED2B8;
+    --color-border: #C4B89A;
+    --color-text-primary: #5B4636;
+    --color-text-secondary: #7A6650;
+    --color-accent: #8B4513;
+    --color-accent-end: #A0522D;
+    --bg-primary: #F4ECD8;
+    --bg-secondary: #E8DFC8;
+    --bg-card: #DED2B8;
+}
+
+/* Safe Area Insets for PWA */
+:root {
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
