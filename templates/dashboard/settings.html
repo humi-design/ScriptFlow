@@ -1,0 +1,744 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Settings - ScriptFlow{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Settings</h1>
+        <p class="text-text-secondary">Customize your ScriptFlow experience</p>
+    </div>
+    
+    <div class="flex gap-8">
+        <!-- Settings Navigation -->
+        <nav class="settings-nav w-56 flex-shrink-0 hidden lg:block">
+            <div class="sticky top-24 space-y-1">
+                <button onclick="showSection('general')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="general">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>General</span>
+                </button>
+                
+                <button onclick="showSection('appearance')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="appearance">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                    </svg>
+                    <span>Appearance</span>
+                </button>
+                
+                <button onclick="showSection('teleprompter')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="teleprompter">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Teleprompter</span>
+                </button>
+                
+                <button onclick="showSection('gestures')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="gestures">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"/>
+                    </svg>
+                    <span>Gestures</span>
+                </button>
+                
+                <button onclick="showSection('storage')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="storage">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                    </svg>
+                    <span>Storage</span>
+                </button>
+                
+                <button onclick="showSection('backup')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="backup">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    <span>Backup</span>
+                </button>
+                
+                <button onclick="showSection('account')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="account">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span>Account</span>
+                </button>
+                
+                <button onclick="showSection('about')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="about">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>About</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Settings Content -->
+        <div class="flex-1 space-y-8">
+            <!-- General Settings -->
+            <section id="section-general" class="settings-section">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">General</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Remember Last Script</h3>
+                                <p class="text-sm text-text-secondary">Open the last script you were working on</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="remember_last_script">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Auto Save</h3>
+                                <p class="text-sm text-text-secondary">Automatically save your work every 30 seconds</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="auto_save">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Auto Restore</h3>
+                                <p class="text-sm text-text-secondary">Restore unsaved content if browser crashes</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="auto_restore">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-3">Launch Behavior</h3>
+                            <select data-setting="launch_behavior" class="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-accent focus:outline-none">
+                                <option value="dashboard">Open Dashboard</option>
+                                <option value="last_script">Continue Last Script</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Appearance Settings -->
+            <section id="section-appearance" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">Appearance</h2>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-medium mb-4">Theme</h3>
+                        <div class="grid grid-cols-4 gap-3">
+                            <button class="theme-btn p-4 rounded-xl border-2 border-accent bg-secondary" data-theme="dark">
+                                <div class="w-full h-12 rounded-lg bg-primary mb-2"></div>
+                                <span class="text-sm font-medium">Dark</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="light">
+                                <div class="w-full h-12 rounded-lg bg-white mb-2"></div>
+                                <span class="text-sm font-medium">Light</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="oled">
+                                <div class="w-full h-12 rounded-lg bg-black mb-2"></div>
+                                <span class="text-sm font-medium">OLED</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="ocean">
+                                <div class="w-full h-12 rounded-lg bg-gradient-to-r from-blue-900 to-cyan-600 mb-2"></div>
+                                <span class="text-sm font-medium">Ocean</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="emerald">
+                                <div class="w-full h-12 rounded-lg bg-gradient-to-r from-emerald-900 to-green-600 mb-2"></div>
+                                <span class="text-sm font-medium">Emerald</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="purple">
+                                <div class="w-full h-12 rounded-lg bg-gradient-to-r from-purple-900 to-pink-600 mb-2"></div>
+                                <span class="text-sm font-medium">Purple</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="sunset">
+                                <div class="w-full h-12 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 mb-2"></div>
+                                <span class="text-sm font-medium">Sunset</span>
+                            </button>
+                            <button class="theme-btn p-4 rounded-xl border-2 border-border hover:border-accent transition-colors" data-theme="sepia">
+                                <div class="w-full h-12 rounded-lg bg-amber-100 mb-2"></div>
+                                <span class="text-sm font-medium">Sepia</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <h3 class="font-medium">Corner Radius</h3>
+                                <span id="corner-radius-value" class="text-accent">16px</span>
+                            </div>
+                            <input type="range" id="corner-radius" min="8" max="32" value="16" class="w-full accent-accent" data-setting="corner_radius">
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-3">Interface Density</h3>
+                            <select data-setting="interface_density" class="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-accent focus:outline-none">
+                                <option value="comfortable">Comfortable</option>
+                                <option value="compact">Compact</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Teleprompter Settings -->
+            <section id="section-teleprompter" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">Teleprompter</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <h3 class="font-medium">Default Speed</h3>
+                                <span id="tp-speed-value" class="text-accent">50%</span>
+                            </div>
+                            <input type="range" id="tp-speed" min="10" max="100" value="50" class="w-full accent-accent" data-setting="tp_speed">
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <h3 class="font-medium">Default Font Size</h3>
+                                <span id="tp-font-size-value" class="text-accent">48px</span>
+                            </div>
+                            <input type="range" id="tp-font-size" min="24" max="96" value="48" class="w-full accent-accent" data-setting="tp_font_size">
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <h3 class="font-medium">Line Height</h3>
+                                <span id="tp-line-height-value" class="text-accent">1.8</span>
+                            </div>
+                            <input type="range" id="tp-line-height" min="1.2" max="2.5" step="0.1" value="1.8" class="w-full accent-accent" data-setting="tp_line_height">
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Mirror Mode</h3>
+                                <p class="text-sm text-text-secondary">Start with horizontal mirror enabled</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" data-setting="tp_mirror">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Safe Area</h3>
+                                <p class="text-sm text-text-secondary">Respect camera notches and islands</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="tp_safe_area">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Focus Line</h3>
+                                <p class="text-sm text-text-secondary">Show horizontal guide line</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="tp_focus_line">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Auto Hide Controls</h3>
+                                <p class="text-sm text-text-secondary">Hide controls after 2 seconds</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="tp_auto_hide">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-3">Default Countdown</h3>
+                            <select data-setting="tp_countdown" class="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-accent focus:outline-none">
+                                <option value="0">Off</option>
+                                <option value="3">3 seconds</option>
+                                <option value="5" selected>5 seconds</option>
+                                <option value="10">10 seconds</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Gesture Settings -->
+            <section id="section-gestures" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">Gestures</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Enable Gestures</h3>
+                                <p class="text-sm text-text-secondary">Use touch gestures in teleprompter</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="gestures_enabled">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-3">Gesture Sensitivity</h3>
+                            <select data-setting="gesture_sensitivity" class="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:border-accent focus:outline-none">
+                                <option value="low">Low</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Storage Settings -->
+            <section id="section-storage" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">Storage</h2>
+                    <div class="space-y-6">
+                        <div class="p-4 rounded-xl bg-secondary border border-border">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-text-secondary">Scripts Stored</span>
+                                <span class="font-medium">{{ stats.total_scripts|default(0) }}</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-text-secondary">Total Words</span>
+                                <span class="font-medium">{{ stats.total_words|default(0)|int|format_number }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-text-secondary">Storage Used</span>
+                                <span class="font-medium">2.4 MB</span>
+                            </div>
+                        </div>
+                        
+                        <div class="h-2 bg-secondary rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-accent to-accent-end rounded-full" style="width: 2.4%"></div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium">Offline Files</h3>
+                                <p class="text-sm text-text-secondary">Cache scripts for offline access</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-setting="offline_enabled">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-border">
+                            <button onclick="clearCache()" class="px-6 py-3 border border-border rounded-xl hover:bg-secondary transition-colors">
+                                Clear Cache
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Backup Settings -->
+            <section id="section-backup" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">Backup & Export</h2>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="exportData('json')" class="p-4 rounded-xl border border-border hover:bg-secondary transition-colors text-left">
+                                <svg class="w-8 h-8 mb-3 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                <h3 class="font-medium">Export JSON</h3>
+                                <p class="text-sm text-text-secondary">Full backup with metadata</p>
+                            </button>
+                            
+                            <button onclick="exportData('txt')" class="p-4 rounded-xl border border-border hover:bg-secondary transition-colors text-left">
+                                <svg class="w-8 h-8 mb-3 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <h3 class="font-medium">Export TXT</h3>
+                                <p class="text-sm text-text-secondary">Plain text scripts only</p>
+                            </button>
+                            
+                            <button onclick="exportData('markdown')" class="p-4 rounded-xl border border-border hover:bg-secondary transition-colors text-left">
+                                <svg class="w-8 h-8 mb-3 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                <h3 class="font-medium">Export Markdown</h3>
+                                <p class="text-sm text-text-secondary">Formatted with structure</p>
+                            </button>
+                            
+                            <label class="p-4 rounded-xl border border-border hover:bg-secondary transition-colors text-left cursor-pointer">
+                                <svg class="w-8 h-8 mb-3 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                                </svg>
+                                <h3 class="font-medium">Import Backup</h3>
+                                <p class="text-sm text-text-secondary">Restore from JSON file</p>
+                                <input type="file" id="import-backup" accept=".json" class="hidden" onchange="importBackup(event)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Account Settings -->
+            <section id="section-account" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">Account</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4 p-4 rounded-xl bg-secondary border border-border">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-accent to-accent-end flex items-center justify-center text-2xl font-bold">
+                                {{ current_user.initials }}
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">{{ current_user.full_name }}</h3>
+                                <p class="text-text-secondary">{{ current_user.email }}</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium mb-3">Subscription</h3>
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-accent/10 to-accent-end/10 border border-accent/30">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <span class="text-lg font-semibold gradient-text">Free Plan</span>
+                                        <p class="text-sm text-text-secondary">10 scripts, basic features</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-gradient-to-r from-accent to-accent-end text-white font-medium rounded-xl hover:opacity-90 transition-opacity">
+                                        Upgrade
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-border space-y-4">
+                            <a href="{{ url_for('auth.logout') }}" class="block p-4 rounded-xl border border-border hover:bg-secondary transition-colors">
+                                <h3 class="font-medium text-text-secondary">Logout</h3>
+                            </a>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-red-500/30">
+                            <h3 class="font-medium text-red-400 mb-3">Danger Zone</h3>
+                            <button onclick="deleteAccount()" class="px-6 py-3 border border-red-500 text-red-500 rounded-xl hover:bg-red-500/10 transition-colors">
+                                Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- About Section -->
+            <section id="section-about" class="settings-section hidden">
+                <div class="p-8 rounded-3xl bg-card border border-border">
+                    <h2 class="text-xl font-semibold mb-6">About ScriptFlow</h2>
+                    <div class="text-center py-8">
+                        <svg class="w-20 h-20 mx-auto mb-4" viewBox="0 0 100 100" fill="none">
+                            <defs>
+                                <linearGradient id="aboutLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea"/>
+                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="100" height="100" rx="22" fill="url(#aboutLogoGradient)"/>
+                            <path d="M30 35h40M30 50h30M30 65h35" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                        </svg>
+                        <h3 class="text-2xl font-bold mb-2">ScriptFlow</h3>
+                        <p class="text-text-secondary mb-4">Version 1.0.0</p>
+                        <p class="text-text-secondary max-w-md mx-auto">
+                            The world's most beautiful AI-ready creator platform with an advanced teleprompter.
+                        </p>
+                    </div>
+                    
+                    <div class="border-t border-border pt-6 mt-6 space-y-3">
+                        <a href="#" class="block p-4 rounded-xl border border-border hover:bg-secondary transition-colors">
+                            Documentation
+                        </a>
+                        <a href="#" class="block p-4 rounded-xl border border-border hover:bg-secondary transition-colors">
+                            Privacy Policy
+                        </a>
+                        <a href="#" class="block p-4 rounded-xl border border-border hover:bg-secondary transition-colors">
+                            Terms of Service
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- PWA Install Banner -->
+<div id="pwa-install-banner" class="hidden fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-96 p-6 rounded-3xl bg-card border border-border shadow-2xl z-50">
+    <div class="flex items-start space-x-4">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-accent-end flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 100 100" fill="none">
+                <path d="M30 35h40M30 50h30M30 65h35" stroke="white" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="flex-1">
+            <h3 class="font-semibold mb-1">Install ScriptFlow</h3>
+            <p class="text-sm text-text-secondary mb-4">Add to your home screen for the best experience</p>
+            <div class="flex space-x-3">
+                <button onclick="installApp()" class="px-4 py-2 bg-gradient-to-r from-accent to-accent-end text-white font-medium rounded-xl hover:opacity-90 transition-opacity text-sm">
+                    Install
+                </button>
+                <button onclick="dismissInstallBanner()" class="px-4 py-2 text-text-secondary hover:text-white transition-colors text-sm">
+                    Not Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+// Settings Navigation
+function showSection(section) {
+    document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(`section-${section}`).classList.remove('hidden');
+    
+    document.querySelectorAll('.settings-nav-btn').forEach(btn => {
+        btn.classList.remove('bg-card', 'text-accent');
+    });
+    document.querySelector(`[data-section="${section}"]`).classList.add('bg-card', 'text-accent');
+}
+
+// Initialize first section
+showSection('general');
+
+// Toggle Switch Handler
+document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+    toggle.addEventListener('change', function() {
+        const setting = this.dataset.setting;
+        const value = this.checked;
+        saveSetting(setting, value);
+    });
+});
+
+// Slider Handlers
+const sliders = [
+    { id: 'corner-radius', setting: 'corner_radius', suffix: 'px' },
+    { id: 'tp-speed', setting: 'tp_speed', suffix: '%' },
+    { id: 'tp-font-size', setting: 'tp_font_size', suffix: 'px' },
+    { id: 'tp-line-height', setting: 'tp_line_height', suffix: '' }
+];
+
+sliders.forEach(({ id, setting, suffix }) => {
+    const slider = document.getElementById(id);
+    const display = document.getElementById(`${id}-value`);
+    
+    slider?.addEventListener('input', function() {
+        if (display) display.textContent = `${this.value}${suffix}`;
+        saveSetting(setting, this.value);
+    });
+});
+
+// Theme Selection
+document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.theme-btn').forEach(b => {
+            b.classList.remove('border-accent');
+            b.classList.add('border-border');
+        });
+        this.classList.add('border-accent');
+        this.classList.remove('border-border');
+        
+        const theme = this.dataset.theme;
+        saveSetting('theme', theme);
+        applyTheme(theme);
+    });
+});
+
+// Select Handlers
+document.querySelectorAll('select[data-setting]').forEach(select => {
+    select.addEventListener('change', function() {
+        saveSetting(this.dataset.setting, this.value);
+    });
+});
+
+// Save Setting
+function saveSetting(key, value) {
+    localStorage.setItem(`sf_${key}`, JSON.stringify(value));
+}
+
+// Load Settings
+function loadSettings() {
+    document.querySelectorAll('[data-setting]').forEach(el => {
+        const key = el.dataset.setting;
+        const stored = localStorage.getItem(`sf_${key}`);
+        if (stored !== null) {
+            const value = JSON.parse(stored);
+            if (el.type === 'checkbox') {
+                el.checked = value;
+            } else {
+                el.value = value;
+            }
+        }
+    });
+}
+
+// Apply Theme
+function applyTheme(theme) {
+    const themes = {
+        dark: { bg: '#090909', card: '#171717', text: '#FFFFFF' },
+        light: { bg: '#FFFFFF', card: '#F5F5F5', text: '#1A1A1A' },
+        oled: { bg: '#000000', card: '#111111', text: '#FFFFFF' },
+        ocean: { bg: '#0A1628', card: '#0F2744', text: '#00D4FF' },
+        emerald: { bg: '#0A1F1A', card: '#0F3329', text: '#10B981' },
+        purple: { bg: '#1A0A2E', card: '#2D1452', text: '#E879F9' },
+        sunset: { bg: '#1A0A0A', card: '#331515', text: '#FF8A65' },
+        sepia: { bg: '#F4ECD8', card: '#E8DFC8', text: '#5B4636' }
+    };
+    
+    const t = themes[theme] || themes.dark;
+    document.documentElement.style.setProperty('--bg-primary', t.bg);
+    document.documentElement.style.setProperty('--bg-card', t.card);
+    document.documentElement.style.setProperty('--text-primary', t.text);
+}
+
+// Export Functions
+function exportData(format) {
+    showToast('Preparing export...', 'info');
+    fetch('/api/scripts')
+        .then(res => res.json())
+        .then(data => {
+            let content;
+            if (format === 'json') {
+                content = JSON.stringify(data, null, 2);
+            } else if (format === 'txt') {
+                content = data.scripts.map(s => `${s.title}\n\n${s.content}`).join('\n\n---\n\n');
+            } else if (format === 'markdown') {
+                content = data.scripts.map(s => `# ${s.title}\n\n${s.content}`).join('\n\n---\n\n');
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `scriptflow_backup_${new Date().toISOString().slice(0,10)}.${format === 'json' ? 'json' : format === 'txt' ? 'txt' : 'md'}`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Export completed', 'success');
+        });
+}
+
+async function importBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            showToast('Backup restored', 'success');
+        } catch (err) {
+            showToast('Invalid backup file', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function clearCache() {
+    if (confirm('Clear all cached data?')) {
+        caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        localStorage.clear();
+        showToast('Cache cleared', 'success');
+    }
+}
+
+function deleteAccount() {
+    if (confirm('Are you sure? This action cannot be undone.')) {
+        if (confirm('All your scripts will be permanently deleted.')) {
+            fetch('/api/user/account', { method: 'DELETE' })
+                .then(() => window.location.href = '/');
+        }
+    }
+}
+
+// PWA Install
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    if (!localStorage.getItem('sf_install_dismissed')) {
+        document.getElementById('pwa-install-banner').classList.remove('hidden');
+    }
+});
+
+function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                showToast('Thanks for installing ScriptFlow!', 'success');
+            }
+            deferredPrompt = null;
+            dismissInstallBanner();
+        });
+    }
+}
+
+function dismissInstallBanner() {
+    localStorage.setItem('sf_install_dismissed', 'true');
+    document.getElementById('pwa-install-banner').classList.add('hidden');
+}
+
+// Initialize
+loadSettings();
+</script>
+
+<style>
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #2B2B2B;
+    border-radius: 28px;
+    transition: 0.3s;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(24px);
+}
+</style>
+{% endblock %}

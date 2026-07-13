@@ -1,0 +1,1299 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ script.title }} - ScriptFlow{% endblock %}
+
+{% block dashboard_content %}
+<div id="editor-app" class="fixed inset-0 bg-primary z-50 flex flex-col" data-script-id="{{ script.id }}">
+    <!-- Minimal Header -->
+    <header id="editor-header" class="flex items-center justify-between px-6 py-4 border-b border-border bg-primary/95 backdrop-blur-md transition-all duration-300">
+        <div class="flex items-center space-x-4">
+            <a href="{{ url_for('dashboard.scripts') }}" class="p-2 -ml-2 rounded-xl hover:bg-card transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <div class="flex items-center space-x-3">
+                <input type="text" id="script-title" value="{{ script.title }}" 
+                       class="bg-transparent border-none text-lg font-semibold focus:outline-none focus:bg-card/50 px-3 py-1.5 rounded-xl max-w-md"
+                       placeholder="Untitled Script">
+                <span id="save-status" class="text-sm text-text-secondary hidden">
+                    <span class="inline-flex items-center">
+                        <svg class="w-4 h-4 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                    </span>
+                </span>
+                <span id="saved-indicator" class="text-sm text-green-500 hidden">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Saved
+                </span>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <!-- Word Stats -->
+            <div class="hidden md:flex items-center space-x-6 text-sm text-text-secondary">
+                <span><strong id="word-count" class="text-white">0</strong> words</span>
+                <span><strong id="char-count" class="text-white">0</strong> chars</span>
+                <span><strong id="read-time" class="text-white">0</strong> min read</span>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <button onclick="startTeleprompter()" class="px-4 py-2 bg-gradient-to-r from-accent to-accent-end text-white font-medium rounded-xl hover:opacity-90 transition-all flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Start</span>
+                </button>
+                
+                <button onclick="startCamera()" class="px-4 py-2 border border-border text-white font-medium rounded-xl hover:bg-card transition-all flex items-center space-x-2" title="Camera Mode">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="hidden sm:inline">Camera</span>
+                </button>
+                
+                <div class="relative">
+                    <button id="editor-menu-btn" class="p-2 rounded-xl hover:bg-card transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                        </svg>
+                    </button>
+                    
+                    <div id="editor-menu" class="hidden absolute right-0 mt-2 w-56 py-2 rounded-2xl bg-card border border-border shadow-xl z-50">
+                        <button onclick="duplicateScript()" class="w-full px-4 py-2 text-left hover:bg-secondary transition-colors flex items-center space-x-3">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <span>Duplicate</span>
+                        </button>
+                        <button onclick="exportScript()" class="w-full px-4 py-2 text-left hover:bg-secondary transition-colors flex items-center space-x-3">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            <span>Export</span>
+                        </button>
+                        <button onclick="toggleFavorite()" class="w-full px-4 py-2 text-left hover:bg-secondary transition-colors flex items-center space-x-3">
+                            <svg class="w-4 h-4 {% if script.is_favorite %}text-red-500 fill-current{% endif %}" fill="{% if script.is_favorite %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span>{% if script.is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}</span>
+                        </button>
+                        <div class="border-t border-border my-2"></div>
+                        <button onclick="deleteScript()" class="w-full px-4 py-2 text-left hover:bg-secondary transition-colors text-red-400 flex items-center space-x-3">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Editor Area -->
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Sidebar (collapsible) -->
+        <aside id="editor-sidebar" class="w-80 border-r border-border bg-secondary overflow-y-auto transition-all duration-300 hidden lg:block">
+            <!-- Display Settings -->
+            <div class="p-6 border-b border-border">
+                <h3 class="text-sm font-semibold mb-4">Display</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-text-secondary">Font Size</span>
+                            <span id="sidebar-font-size" class="text-accent">{{ script.font_size }}px</span>
+                        </div>
+                        <input type="range" id="editor-font-size" min="14" max="48" value="{{ script.font_size }}" 
+                               class="w-full accent-accent">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-text-secondary">Line Height</span>
+                            <span id="sidebar-line-height" class="text-accent">{{ script.line_height }}</span>
+                        </div>
+                        <input type="range" id="editor-line-height" min="1.2" max="2.5" step="0.1" value="{{ script.line_height }}" 
+                               class="w-full accent-accent">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reading Analytics -->
+            <div class="p-6 border-b border-border">
+                <h3 class="text-sm font-semibold mb-4">Analytics</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-secondary">Words</span>
+                        <span id="stat-words">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-secondary">Characters</span>
+                        <span id="stat-chars">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-secondary">Paragraphs</span>
+                        <span id="stat-paragraphs">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-secondary">Lines</span>
+                        <span id="stat-lines">0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-secondary">Read Time</span>
+                        <span id="stat-read-time">0 min</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-text-secondary">Avg. Speed</span>
+                        <span>150 WPM</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Teleprompter Preview -->
+            <div class="p-6">
+                <h3 class="text-sm font-semibold mb-4">Teleprompter</h3>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-text-secondary">Scroll Speed</span>
+                            <span id="sidebar-speed" class="text-accent">{{ script.scroll_speed }}%</span>
+                        </div>
+                        <input type="range" id="editor-speed" min="10" max="100" value="{{ script.scroll_speed }}" 
+                               class="w-full accent-accent">
+                    </div>
+                    <button onclick="startTeleprompter()" class="w-full py-3 bg-gradient-to-r from-accent to-accent-end text-white font-medium rounded-xl hover:opacity-90 transition-all">
+                        Open Teleprompter
+                    </button>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Editor Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Toolbar -->
+            <div id="editor-toolbar" class="px-6 py-3 border-b border-border bg-primary/50 flex items-center justify-between transition-all duration-300">
+                <div class="flex items-center space-x-2">
+                    <button onclick="formatText('bold')" class="p-2 rounded-lg hover:bg-card transition-colors" title="Bold (Ctrl+B)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/>
+                        </svg>
+                    </button>
+                    <button onclick="formatText('italic')" class="p-2 rounded-lg hover:bg-card transition-colors" title="Italic (Ctrl+I)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4h4m-2 0v16m-4 0h8"/>
+                        </svg>
+                    </button>
+                    <button onclick="formatText('underline')" class="p-2 rounded-lg hover:bg-card transition-colors" title="Underline (Ctrl+U)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 20h16M6 4v8a6 6 0 0012 0V4"/>
+                        </svg>
+                    </button>
+                    <div class="w-px h-6 bg-border mx-2"></div>
+                    <button onclick="undoAction()" class="p-2 rounded-lg hover:bg-card transition-colors" title="Undo (Ctrl+Z)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                        </svg>
+                    </button>
+                    <button onclick="redoAction()" class="p-2 rounded-lg hover:bg-card transition-colors" title="Redo (Ctrl+Shift+Z)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <label class="flex items-center space-x-2 px-3 py-1.5 rounded-lg hover:bg-card transition-colors cursor-pointer">
+                        <svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        <span class="text-sm text-text-secondary">Import</span>
+                        <input type="file" id="import-file" accept=".txt,.docx,.pdf,.md" class="hidden" onchange="handleImport(event)">
+                    </label>
+                    <button onclick="pasteFromClipboard()" class="p-2 rounded-lg hover:bg-card transition-colors" title="Paste">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Text Editor -->
+            <div id="editor-container" class="flex-1 overflow-y-auto px-4 md:px-8 lg:px-16 py-8">
+                <div id="editor" contenteditable="true" 
+                     class="min-h-full focus:outline-none prose prose-invert max-w-none"
+                     style="font-size: {{ script.font_size }}px; line-height: {{ script.line_height }};"
+                     data-placeholder="Start writing your script..."
+                     oninput="handleEditorInput()">{{ script.content|safe }}</div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Bottom Status Bar -->
+    <footer id="editor-footer" class="px-6 py-2 border-t border-border bg-primary/95 backdrop-blur-md flex items-center justify-between text-xs text-text-secondary">
+        <div class="flex items-center space-x-4">
+            <span id="footer-position">Ln 1, Col 1</span>
+            <span id="footer-words">0 words</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span>{{ script.theme|capitalize }} Mode</span>
+            <span id="footer-last-saved">Last saved: Just now</span>
+        </div>
+    </footer>
+</div>
+
+<!-- Teleprompter Modal -->
+<div id="teleprompter-modal" class="fixed inset-0 z-[100] bg-black hidden">
+    <div id="teleprompter-content" class="w-full h-full flex flex-col">
+        <!-- Teleprompter Display -->
+        <div id="teleprompter-display" class="flex-1 relative overflow-hidden cursor-pointer">
+            <!-- Safe Area Indicator -->
+            <div id="safe-area-top" class="absolute top-0 left-0 right-0 h-[env(safe-area-inset-top,0px)] bg-gradient-to-b from-black to-transparent z-10"></div>
+            
+            <!-- Reading Content -->
+            <div id="teleprompter-text" class="w-full h-full overflow-hidden" style="font-size: 48px; line-height: 1.8;">
+                <div id="teleprompter-content-inner" class="px-8 md:px-16 lg:px-32 py-24"></div>
+            </div>
+            
+            <!-- Focus Line -->
+            <div id="focus-line" class="absolute left-0 right-0 top-1/2 -translate-y-1/2 pointer-events-none z-5">
+                <div class="h-0.5 bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
+            </div>
+            
+            <!-- Safe Area Indicator Bottom -->
+            <div id="safe-area-bottom" class="absolute bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom,60px)] bg-gradient-to-t from-black to-transparent z-10"></div>
+            
+            <!-- Countdown Overlay -->
+            <div id="countdown-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-50 hidden">
+                <span id="countdown-number" class="text-9xl font-bold gradient-text animate-pulse">3</span>
+            </div>
+            
+            <!-- Scroll Indicator -->
+            <div id="scroll-indicator" class="absolute right-4 top-1/2 -translate-y-1/2 w-1 h-32 rounded-full bg-white/10 overflow-hidden opacity-0 transition-opacity">
+                <div id="scroll-indicator-progress" class="w-full bg-accent rounded-full transition-all duration-100" style="height: 0%"></div>
+            </div>
+        </div>
+        
+        <!-- Control Bar -->
+        <div id="control-bar" class="absolute bottom-8 left-1/2 -translate-x-1/2 glass rounded-3xl px-6 py-4 flex items-center space-x-4 transition-all duration-300 z-20">
+            <!-- Play/Pause -->
+            <button id="tp-play-btn" onclick="togglePlay()" class="w-14 h-14 rounded-full bg-gradient-to-r from-accent to-accent-end text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105">
+                <svg id="tp-play-icon" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="tp-pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                </svg>
+            </button>
+            
+            <!-- Restart -->
+            <button onclick="restartScroll()" class="p-3 rounded-xl hover:bg-white/10 transition-colors" title="Restart (R)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </button>
+            
+            <div class="w-px h-8 bg-white/20"></div>
+            
+            <!-- Speed -->
+            <div class="flex items-center space-x-2">
+                <button onclick="adjustSpeed(-10)" class="p-2 rounded-xl hover:bg-white/10 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                    </svg>
+                </button>
+                <div class="w-20 text-center">
+                    <span id="tp-speed-display" class="text-lg font-bold">50%</span>
+                </div>
+                <button onclick="adjustSpeed(10)" class="p-2 rounded-xl hover:bg-white/10 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="w-px h-8 bg-white/20"></div>
+            
+            <!-- Font Size -->
+            <div class="flex items-center space-x-2">
+                <button onclick="adjustFontSize(-4)" class="p-2 rounded-xl hover:bg-white/10 transition-colors text-sm">A-</button>
+                <span id="tp-font-display" class="text-sm w-8 text-center">48px</span>
+                <button onclick="adjustFontSize(4)" class="p-2 rounded-xl hover:bg-white/10 transition-colors text-sm">A+</button>
+            </div>
+            
+            <div class="w-px h-8 bg-white/20"></div>
+            
+            <!-- Settings -->
+            <button onclick="toggleQuickSettings()" class="p-3 rounded-xl hover:bg-white/10 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </button>
+            
+            <!-- Mirror -->
+            <button onclick="toggleMirror()" id="mirror-btn" class="p-3 rounded-xl hover:bg-white/10 transition-colors" title="Mirror (M)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+            </button>
+            
+            <!-- Fullscreen -->
+            <button onclick="toggleFullscreen()" class="p-3 rounded-xl hover:bg-white/10 transition-colors" title="Fullscreen (F)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                </svg>
+            </button>
+            
+            <!-- Close -->
+            <button onclick="closeTeleprompter()" class="p-3 rounded-xl hover:bg-white/10 transition-colors" title="Close (Esc)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-20">
+            <div id="tp-progress-bar" class="h-full bg-gradient-to-r from-accent to-accent-end transition-all duration-100" style="width: 0%"></div>
+        </div>
+        
+        <!-- Quick Settings Sheet -->
+        <div id="quick-settings" class="absolute bottom-0 left-0 right-0 bg-secondary/95 backdrop-blur-xl rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300 z-30">
+            <div class="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6"></div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Reading Mode -->
+                <div>
+                    <label class="text-sm text-text-secondary mb-2 block">Reading Mode</label>
+                    <select id="reading-mode" class="w-full px-4 py-3 rounded-xl bg-card border border-border">
+                        <option value="standard">Standard</option>
+                        <option value="center">Center Focus</option>
+                        <option value="presenter">Presenter</option>
+                        <option value="high-contrast">High Contrast</option>
+                    </select>
+                </div>
+                
+                <!-- Theme -->
+                <div>
+                    <label class="text-sm text-text-secondary mb-2 block">Theme</label>
+                    <select id="tp-theme" class="w-full px-4 py-3 rounded-xl bg-card border border-border">
+                        <option value="dark">Dark</option>
+                        <option value="oled">OLED Black</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="light">Light</option>
+                        <option value="ocean">Ocean</option>
+                        <option value="emerald">Emerald</option>
+                    </select>
+                </div>
+                
+                <!-- Mirror -->
+                <div>
+                    <label class="text-sm text-text-secondary mb-2 block">Mirror</label>
+                    <select id="mirror-mode" class="w-full px-4 py-3 rounded-xl bg-card border border-border">
+                        <option value="none">None</option>
+                        <option value="horizontal">Horizontal</option>
+                        <option value="vertical">Vertical</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+                
+                <!-- Countdown -->
+                <div>
+                    <label class="text-sm text-text-secondary mb-2 block">Countdown</label>
+                    <select id="countdown-select" class="w-full px-4 py-3 rounded-xl bg-card border border-border">
+                        <option value="3">3 seconds</option>
+                        <option value="5">5 seconds</option>
+                        <option value="10">10 seconds</option>
+                        <option value="0">Off</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Speed Slider -->
+            <div class="mt-6">
+                <div class="flex justify-between mb-2">
+                    <span class="text-sm text-text-secondary">Scroll Speed</span>
+                    <span id="qs-speed-value" class="text-sm font-medium">50%</span>
+                </div>
+                <input type="range" id="qs-speed-slider" min="5" max="100" value="50" class="w-full accent-accent">
+                <div class="flex justify-between text-xs text-text-secondary mt-1">
+                    <span>Slow</span>
+                    <span>Fast</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Camera Mode -->
+<div id="camera-modal" class="fixed inset-0 z-[100] bg-black hidden">
+    <video id="camera-video" class="w-full h-full object-cover" autoplay playsinline></video>
+    
+    <!-- Camera Overlay -->
+    <div id="camera-overlay" class="absolute inset-0 pointer-events-none">
+        <!-- Teleprompter Overlay -->
+        <div id="camera-teleprompter" class="absolute inset-0 pointer-events-auto">
+            <div id="camera-tp-text" class="w-full h-full overflow-hidden" style="font-size: 36px; line-height: 1.8;"></div>
+        </div>
+    </div>
+    
+    <!-- Safe Area Top -->
+    <div class="absolute top-0 left-0 right-0 h-[env(safe-area-inset-top,0px)] bg-gradient-to-b from-black/50 to-transparent z-10"></div>
+    
+    <!-- Camera Controls -->
+    <div id="camera-controls" class="absolute bottom-8 left-0 right-0 flex items-center justify-center space-x-6 z-20">
+        <button onclick="closeCamera()" class="p-4 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        
+        <button id="record-btn" onclick="toggleRecording()" class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors">
+            <div id="record-dot" class="w-8 h-8 rounded-full bg-red-500"></div>
+        </button>
+        
+        <button onclick="toggleCameraFacing()" class="p-4 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Recording Indicator -->
+    <div id="recording-indicator" class="absolute top-8 left-1/2 -translate-x-1/2 hidden">
+        <div class="flex items-center space-x-2 px-4 py-2 rounded-full bg-red-500/80 backdrop-blur-sm">
+            <div class="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+            <span id="recording-time" class="text-white font-mono">00:00</span>
+        </div>
+    </div>
+    
+    <!-- Bottom Safe Area -->
+    <div class="absolute bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom,80px)] bg-gradient-to-t from-black/50 to-transparent z-10"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+const scriptId = {{ script.id }};
+let isPlaying = false;
+let animationFrameId = null;
+let currentSpeed = {{ script.scroll_speed }};
+let currentFontSize = {{ script.font_size }};
+let currentLineHeight = {{ script.line_height }};
+let isMirrored = false;
+let isFullscreen = false;
+let lastScrollPosition = 0;
+let lastSavedContent = '';
+let autoSaveTimer = null;
+let controlBarVisible = true;
+let controlBarTimeout = null;
+
+// Editor Elements
+const editor = document.getElementById('editor');
+const titleInput = document.getElementById('script-title');
+const wordCountEl = document.getElementById('word-count');
+const charCountEl = document.getElementById('char-count');
+const readTimeEl = document.getElementById('read-time');
+const saveStatus = document.getElementById('save-status');
+const savedIndicator = document.getElementById('saved-indicator');
+
+// Teleprompter Elements
+const tpModal = document.getElementById('teleprompter-modal');
+const tpText = document.getElementById('teleprompter-text');
+const tpContent = document.getElementById('teleprompter-content-inner');
+const tpPlayBtn = document.getElementById('tp-play-btn');
+const tpPlayIcon = document.getElementById('tp-play-icon');
+const tpPauseIcon = document.getElementById('tp-pause-icon');
+const tpSpeedDisplay = document.getElementById('tp-speed-display');
+const tpFontDisplay = document.getElementById('tp-font-display');
+const tpProgressBar = document.getElementById('tp-progress-bar');
+const controlBar = document.getElementById('control-bar');
+const countdownOverlay = document.getElementById('countdown-overlay');
+const countdownNumber = document.getElementById('countdown-number');
+const quickSettings = document.getElementById('quick-settings');
+const scrollIndicator = document.getElementById('scroll-indicator');
+const scrollIndicatorProgress = document.getElementById('scroll-indicator-progress');
+
+// Calculate text metrics
+function calculateMetrics() {
+    const text = editor.innerText || '';
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    const chars = text.length;
+    const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 0);
+    const lines = text.split(/\n/).length;
+    const readTime = Math.max(1, Math.round(words.length / 150));
+    
+    return {
+        words: words.length,
+        chars: chars,
+        paragraphs: paragraphs.length,
+        lines: lines,
+        readTime: readTime
+    };
+}
+
+// Update metrics display
+function updateMetrics() {
+    const metrics = calculateMetrics();
+    
+    wordCountEl.textContent = metrics.words.toLocaleString();
+    charCountEl.textContent = metrics.chars.toLocaleString();
+    readTimeEl.textContent = `${metrics.readTime} min`;
+    
+    // Update sidebar stats
+    document.getElementById('stat-words').textContent = metrics.words.toLocaleString();
+    document.getElementById('stat-chars').textContent = metrics.chars.toLocaleString();
+    document.getElementById('stat-paragraphs').textContent = metrics.paragraphs.toLocaleString();
+    document.getElementById('stat-lines').textContent = metrics.lines.toLocaleString();
+    document.getElementById('stat-read-time').textContent = `${metrics.readTime} min`;
+    
+    // Update footer
+    document.getElementById('footer-words').textContent = `${metrics.words} words`;
+}
+
+// Auto-save functionality
+function handleEditorInput() {
+    updateMetrics();
+    
+    // Show saving indicator
+    saveStatus.classList.remove('hidden');
+    savedIndicator.classList.add('hidden');
+    
+    // Clear existing timer
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    
+    // Auto-save after 3 seconds of inactivity
+    autoSaveTimer = setTimeout(saveScript, 3000);
+}
+
+async function saveScript() {
+    const title = titleInput.value;
+    const content = editor.innerHTML;
+    
+    if (content === lastSavedContent && title === lastSavedTitle) return;
+    
+    try {
+        const response = await fetch(`/api/scripts/${scriptId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, content })
+        });
+        
+        if (response.ok) {
+            lastSavedContent = content;
+            lastSavedTitle = title;
+            saveStatus.classList.add('hidden');
+            savedIndicator.classList.remove('hidden');
+            document.getElementById('footer-last-saved').textContent = `Last saved: ${new Date().toLocaleTimeString()}`;
+        }
+    } catch (error) {
+        console.error('Save failed:', error);
+    }
+}
+
+let lastSavedTitle = titleInput.value;
+
+// Font size slider
+document.getElementById('editor-font-size')?.addEventListener('input', function() {
+    const size = this.value;
+    editor.style.fontSize = `${size}px`;
+    document.getElementById('sidebar-font-size').textContent = `${size}px`;
+    saveSettings();
+});
+
+// Line height slider
+document.getElementById('editor-line-height')?.addEventListener('input', function() {
+    const height = this.value;
+    editor.style.lineHeight = height;
+    document.getElementById('sidebar-line-height').textContent = height;
+    saveSettings();
+});
+
+// Speed slider
+document.getElementById('editor-speed')?.addEventListener('input', function() {
+    currentSpeed = parseInt(this.value);
+    document.getElementById('sidebar-speed').textContent = `${currentSpeed}%`;
+    saveSettings();
+});
+
+// Save settings
+function saveSettings() {
+    fetch(`/api/scripts/${scriptId}/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            font_size: parseInt(document.getElementById('editor-font-size').value),
+            line_height: parseFloat(document.getElementById('editor-line-height').value),
+            scroll_speed: currentSpeed
+        })
+    });
+}
+
+// Start teleprompter
+function startTeleprompter() {
+    tpModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Get content
+    const content = editor.innerText || '';
+    tpContent.innerHTML = content.split('\n').map(line => `<p class="mb-8">${line || '&nbsp;'}</p>`).join('');
+    
+    // Reset state
+    isPlaying = false;
+    tpPlayIcon.classList.remove('hidden');
+    tpPauseIcon.classList.add('hidden');
+    tpText.scrollTop = 0;
+    
+    // Apply settings
+    tpText.style.fontSize = `${currentFontSize}px`;
+    tpText.style.lineHeight = currentLineHeight;
+    tpSpeedDisplay.textContent = `${currentSpeed}%`;
+    tpFontDisplay.textContent = `${currentFontSize}px`;
+    
+    // Request wake lock
+    requestWakeLock();
+}
+
+// Close teleprompter
+function closeTeleprompter() {
+    tpModal.classList.add('hidden');
+    document.body.style.overflow = '';
+    
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+    
+    // Release wake lock
+    releaseWakeLock();
+}
+
+// Toggle play/pause
+function togglePlay() {
+    isPlaying = !isPlaying;
+    
+    if (isPlaying) {
+        tpPlayIcon.classList.add('hidden');
+        tpPauseIcon.classList.remove('hidden');
+        startScrolling();
+    } else {
+        tpPlayIcon.classList.remove('hidden');
+        tpPauseIcon.classList.add('hidden');
+        stopScrolling();
+    }
+}
+
+// 60 FPS Scroll Engine
+function startScrolling() {
+    let lastTime = performance.now();
+    
+    function animate(currentTime) {
+        if (!isPlaying) return;
+        
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        
+        // Calculate scroll amount (pixels per second = baseSpeed * speedMultiplier * deltaTime / 1000)
+        const baseSpeed = currentSpeed * 0.5;
+        const scrollAmount = (baseSpeed * deltaTime) / 1000;
+        
+        lastScrollPosition += scrollAmount;
+        tpText.scrollTop = lastScrollPosition;
+        
+        // Update progress
+        updateProgress();
+        
+        // Check if at end
+        const maxScroll = tpText.scrollHeight - tpText.clientHeight;
+        if (lastScrollPosition >= maxScroll) {
+            togglePlay();
+            showToast('Script completed!', 'success');
+            return;
+        }
+        
+        animationFrameId = requestAnimationFrame(animate);
+    }
+    
+    animationFrameId = requestAnimationFrame(animate);
+}
+
+function stopScrolling() {
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+}
+
+function restartScroll() {
+    stopScrolling();
+    lastScrollPosition = 0;
+    tpText.scrollTop = 0;
+    updateProgress();
+    
+    if (isPlaying) {
+        tpPlayIcon.classList.add('hidden');
+        tpPauseIcon.classList.remove('hidden');
+        startScrolling();
+    }
+}
+
+function updateProgress() {
+    const maxScroll = tpText.scrollHeight - tpText.clientHeight;
+    const progress = maxScroll > 0 ? (lastScrollPosition / maxScroll) * 100 : 0;
+    tpProgressBar.style.width = `${Math.min(100, progress)}%`;
+    scrollIndicatorProgress.style.height = `${progress}%`;
+    
+    // Show scroll indicator briefly
+    scrollIndicator.style.opacity = '1';
+    clearTimeout(scrollIndicator._hideTimeout);
+    scrollIndicator._hideTimeout = setTimeout(() => {
+        if (!isPlaying) scrollIndicator.style.opacity = '0';
+    }, 2000);
+}
+
+// Adjust speed
+function adjustSpeed(delta) {
+    currentSpeed = Math.max(5, Math.min(100, currentSpeed + delta));
+    tpSpeedDisplay.textContent = `${currentSpeed}%`;
+    
+    // Update quick settings slider
+    document.getElementById('qs-speed-slider').value = currentSpeed;
+    document.getElementById('qs-speed-value').textContent = `${currentSpeed}%`;
+    
+    saveSettings();
+}
+
+// Adjust font size
+function adjustFontSize(delta) {
+    currentFontSize = Math.max(16, Math.min(96, currentFontSize + delta));
+    tpText.style.fontSize = `${currentFontSize}px`;
+    tpFontDisplay.textContent = `${currentFontSize}px`;
+    
+    saveSettings();
+}
+
+// Toggle mirror
+function toggleMirror() {
+    isMirrored = !isMirrored;
+    tpText.style.transform = isMirrored ? 'scaleX(-1)' : 'scaleX(1)';
+}
+
+// Toggle fullscreen
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        tpModal.requestFullscreen().then(() => {
+            isFullscreen = true;
+        }).catch(err => {
+            showToast('Fullscreen not available', 'error');
+        });
+    } else {
+        document.exitFullscreen();
+        isFullscreen = false;
+    }
+}
+
+// Toggle quick settings
+function toggleQuickSettings() {
+    quickSettings.classList.toggle('translate-y-full');
+}
+
+// Control bar auto-hide
+tpText?.addEventListener('mousemove', showControlBar);
+tpText?.addEventListener('touchstart', showControlBar);
+
+function showControlBar() {
+    controlBar.style.opacity = '1';
+    controlBar.style.transform = 'translateX(-50%) translateY(0)';
+    
+    clearTimeout(controlBarTimeout);
+    controlBarTimeout = setTimeout(() => {
+        if (isPlaying) {
+            controlBar.style.opacity = '0';
+            controlBar.style.transform = 'translateX(-50%) translateY(10px)';
+        }
+    }, 2000);
+}
+
+// Countdown before start
+async function startWithCountdown(seconds) {
+    if (seconds <= 0) {
+        togglePlay();
+        return;
+    }
+    
+    countdownOverlay.classList.remove('hidden');
+    
+    for (let i = seconds; i > 0; i--) {
+        countdownNumber.textContent = i;
+        countdownNumber.style.transform = 'scale(1.2)';
+        await new Promise(r => setTimeout(r, 200));
+        countdownNumber.style.transform = 'scale(1)';
+        await new Promise(r => setTimeout(r, 800));
+    }
+    
+    countdownNumber.textContent = 'Go!';
+    await new Promise(r => setTimeout(r, 500));
+    countdownOverlay.classList.add('hidden');
+    
+    togglePlay();
+}
+
+// Wake Lock API
+let wakeLock = null;
+
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+        }
+    } catch (err) {
+        console.log('Wake Lock error:', err);
+    }
+}
+
+function releaseWakeLock() {
+    if (wakeLock) {
+        wakeLock.release();
+        wakeLock = null;
+    }
+}
+
+// Touch Gestures
+let touchStartY = 0;
+let touchStartX = 0;
+let touchStartTime = 0;
+let lastTap = 0;
+let pinchDistance = 0;
+
+tpText?.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+    touchStartTime = Date.now();
+    
+    if (e.touches.length === 2) {
+        pinchDistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+        );
+    }
+}, { passive: true });
+
+tpText?.addEventListener('touchend', (e) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchDuration = Date.now() - touchStartTime;
+    const deltaY = touchStartY - touchEndY;
+    const deltaX = touchStartX - touchEndX;
+    
+    // Detect tap vs swipe
+    if (Math.abs(deltaY) < 20 && Math.abs(deltaX) < 20) {
+        // Tap
+        const now = Date.now();
+        if (now - lastTap < 300) {
+            // Double tap - toggle play
+            togglePlay();
+        } else {
+            // Single tap - show controls
+            showControlBar();
+        }
+        lastTap = now;
+    } else if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+        // Vertical swipe
+        if (deltaY > 0) {
+            adjustSpeed(5); // Swipe up = faster
+        } else {
+            adjustSpeed(-5); // Swipe down = slower
+        }
+    } else if (Math.abs(deltaX) > 50) {
+        // Horizontal swipe - paragraph navigation
+        // Could implement paragraph jumping here
+    }
+    
+    // Pinch to zoom
+    if (e.touches.length === 0 && pinchDistance > 0) {
+        const endDistance = Math.hypot(
+            e.changedTouches[0].clientX - (e.changedTouches[1]?.clientX || 0),
+            e.changedTouches[0].clientY - (e.changedTouches[1]?.clientY || 0)
+        );
+        
+        if (endDistance > pinchDistance + 50) {
+            adjustFontSize(4);
+        } else if (endDistance < pinchDistance - 50) {
+            adjustFontSize(-4);
+        }
+        pinchDistance = 0;
+    }
+}, { passive: true });
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (!tpModal.classList.contains('hidden')) {
+        switch(e.key) {
+            case ' ':
+                e.preventDefault();
+                togglePlay();
+                break;
+            case 'ArrowUp':
+            case 'w':
+            case 'W':
+                e.preventDefault();
+                adjustSpeed(5);
+                break;
+            case 'ArrowDown':
+            case 's':
+            case 'S':
+                e.preventDefault();
+                adjustSpeed(-5);
+                break;
+            case 'ArrowLeft':
+                adjustFontSize(-4);
+                break;
+            case 'ArrowRight':
+                adjustFontSize(4);
+                break;
+            case 'f':
+            case 'F':
+                toggleFullscreen();
+                break;
+            case 'm':
+            case 'M':
+                toggleMirror();
+                break;
+            case 'r':
+            case 'R':
+                restartScroll();
+                break;
+            case 'Escape':
+                if (!quickSettings.classList.contains('translate-y-full')) {
+                    quickSettings.classList.add('translate-y-full');
+                } else {
+                    closeTeleprompter();
+                }
+                break;
+        }
+    }
+    
+    // Editor shortcuts
+    if (editor && document.activeElement !== titleInput) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveScript();
+        }
+    }
+});
+
+// Quick settings handlers
+document.getElementById('qs-speed-slider')?.addEventListener('input', function() {
+    currentSpeed = parseInt(this.value);
+    tpSpeedDisplay.textContent = `${currentSpeed}%`;
+    this.previousElementSibling.textContent = `${currentSpeed}%`;
+});
+
+document.getElementById('tp-theme')?.addEventListener('change', function() {
+    const themes = {
+        dark: { bg: '#090909', text: '#FFFFFF' },
+        oled: { bg: '#000000', text: '#FFFFFF' },
+        sepia: { bg: '#F4ECD8', text: '#5B4636' },
+        light: { bg: '#FFFFFF', text: '#1A1A1A' },
+        ocean: { bg: '#0A1628', text: '#00D4FF' },
+        emerald: { bg: '#0A1F1A', text: '#10B981' }
+    };
+    
+    const theme = themes[this.value];
+    tpModal.style.background = theme.bg;
+    tpText.style.color = theme.text;
+});
+
+document.getElementById('reading-mode')?.addEventListener('change', function() {
+    const mode = this.value;
+    if (mode === 'center') {
+        tpContent.style.display = 'flex';
+        tpContent.style.flexDirection = 'column';
+        tpContent.style.justifyContent = 'center';
+        tpContent.style.minHeight = '50vh';
+    } else {
+        tpContent.style.display = 'block';
+        tpContent.style.minHeight = 'auto';
+    }
+});
+
+// Menu toggle
+document.getElementById('editor-menu-btn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('editor-menu').classList.toggle('hidden');
+});
+
+document.addEventListener('click', () => {
+    document.getElementById('editor-menu')?.classList.add('hidden');
+});
+
+// Toolbar hide while typing
+let typingTimeout;
+editor?.addEventListener('focus', () => {
+    document.getElementById('editor-toolbar').style.opacity = '0.5';
+});
+
+editor?.addEventListener('blur', () => {
+    document.getElementById('editor-toolbar').style.opacity = '1';
+});
+
+editor?.addEventListener('input', () => {
+    document.getElementById('editor-toolbar').style.opacity = '1';
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        if (document.activeElement === editor) {
+            document.getElementById('editor-toolbar').style.opacity = '0.3';
+        }
+    }, 2000);
+});
+
+// Import functionality
+function handleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        editor.innerText = e.target.result;
+        updateMetrics();
+        saveScript();
+        showToast(`Imported ${file.name}`, 'success');
+    };
+    reader.onerror = () => {
+        showToast('Import failed', 'error');
+    };
+    
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext === 'txt' || ext === 'md') {
+        reader.readAsText(file);
+    } else {
+        showToast('Please upload a .txt or .md file', 'info');
+    }
+}
+
+async function pasteFromClipboard() {
+    try {
+        const text = await navigator.clipboard.readText();
+        editor.innerText = text;
+        updateMetrics();
+        showToast('Pasted from clipboard', 'success');
+    } catch (err) {
+        showToast('Clipboard access denied', 'error');
+    }
+}
+
+function duplicateScript() {
+    fetch(`/api/scripts/${scriptId}/duplicate`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            showToast('Script duplicated', 'success');
+            setTimeout(() => {
+                window.location.href = `/script/${data.script.id}/editor`;
+            }, 500);
+        });
+}
+
+function exportScript() {
+    const content = editor.innerText;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${titleInput.value || 'script'}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function deleteScript() {
+    if (confirm('Are you sure you want to delete this script?')) {
+        fetch(`/api/scripts/${scriptId}`, { method: 'DELETE' })
+            .then(() => {
+                window.location.href = '{{ url_for("dashboard.scripts") }}';
+            });
+    }
+}
+
+function toggleFavorite() {
+    fetch(`/api/scripts/${scriptId}/favorite`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            showToast(data.is_favorite ? 'Added to favorites' : 'Removed from favorites', 'success');
+        });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    updateMetrics();
+    lastSavedContent = editor.innerHTML;
+    lastSavedTitle = titleInput.value;
+});
+
+// Initialize on page load
+updateMetrics();
+
+// Camera Mode
+let cameraStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let isRecording = false;
+let recordingStartTime = 0;
+let recordingTimer = null;
+let facingMode = 'user';
+
+async function startCamera() {
+    try {
+        const constraints = {
+            video: {
+                facingMode: facingMode,
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            },
+            audio: true
+        };
+        
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        const video = document.getElementById('camera-video');
+        video.srcObject = cameraStream;
+        
+        // Set teleprompter text
+        const content = editor.innerText || '';
+        document.getElementById('camera-tp-text').innerHTML = content.split('\n').map(line => `<p class="mb-8">${line || '&nbsp;'}</p>`).join('');
+        
+        // Show camera modal
+        document.getElementById('camera-modal').classList.remove('hidden');
+        
+    } catch (err) {
+        console.error('Camera error:', err);
+        showToast('Camera access denied or not available', 'error');
+    }
+}
+
+function closeCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+    
+    if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+    }
+    
+    if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+    }
+    
+    document.getElementById('camera-modal').classList.add('hidden');
+    document.getElementById('recording-indicator').classList.add('hidden');
+}
+
+async function toggleCameraFacing() {
+    facingMode = facingMode === 'user' ? 'environment' : 'user';
+    
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        await startCamera();
+    }
+}
+
+function toggleRecording() {
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        startRecording();
+    } else if (mediaRecorder.state === 'recording') {
+        stopRecording();
+    }
+}
+
+function startRecording() {
+    if (!cameraStream) {
+        showToast('Camera not available', 'error');
+        return;
+    }
+    
+    recordedChunks = [];
+    
+    try {
+        // Try to get audio/video stream
+        const options = { mimeType: 'video/webm;codecs=vp9,opus' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options.mimeType = 'video/webm;codecs=vp8,opus';
+        }
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options.mimeType = 'video/webm';
+        }
+        
+        mediaRecorder = new MediaRecorder(cameraStream, options);
+        
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+        
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            
+            // Create download link
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${titleInput.value || 'recording'}_${new Date().toISOString().slice(0,10)}.webm`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('Recording saved!', 'success');
+        };
+        
+        mediaRecorder.start(1000); // Collect data every second
+        isRecording = true;
+        
+        // Update UI
+        document.getElementById('recording-indicator').classList.remove('hidden');
+        document.getElementById('record-dot').style.borderRadius = '4px';
+        document.getElementById('record-dot').style.width = '20px';
+        document.getElementById('record-dot').style.height = '20px';
+        
+        // Start timer
+        recordingStartTime = Date.now();
+        recordingTimer = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('recording-time').textContent = `${minutes}:${seconds}`;
+        }, 1000);
+        
+    } catch (err) {
+        console.error('Recording error:', err);
+        showToast('Recording not supported in this browser', 'error');
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        isRecording = false;
+        
+        // Reset UI
+        document.getElementById('recording-indicator').classList.add('hidden');
+        document.getElementById('record-dot').style.borderRadius = '50%';
+        document.getElementById('record-dot').style.width = '32px';
+        document.getElementById('record-dot').style.height = '32px';
+        
+        if (recordingTimer) {
+            clearInterval(recordingTimer);
+            recordingTimer = null;
+        }
+    }
+}
+</script>
+{% endblock %}

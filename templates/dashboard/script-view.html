@@ -1,0 +1,286 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ script.title }} - ScriptFlow{% endblock %}
+
+{% block dashboard_content %}
+<div class="h-[calc(100vh-120px)] flex flex-col">
+    <!-- Teleprompter Header -->
+    <div class="flex items-center justify-between mb-4">
+        <div>
+            <a href="{{ url_for('dashboard.scripts') }}" class="inline-flex items-center text-text-secondary hover:text-white transition-colors mb-1">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back to scripts
+            </a>
+            <h1 class="text-xl font-bold">{{ script.title }}</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('dashboard.edit_script', script_id=script.id) }}" 
+               class="px-4 py-2 border border-border rounded-xl hover:bg-card transition-colors">
+                Edit
+            </a>
+            <button onclick="toggleFullscreen()" class="p-2 border border-border rounded-xl hover:bg-card transition-colors" title="Fullscreen">
+                <svg id="fullscreen-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Teleprompter Controls -->
+    <div class="flex flex-wrap items-center gap-4 mb-4 p-4 rounded-2xl bg-card border border-border">
+        <div class="flex items-center space-x-2">
+            <button id="play-btn" onclick="togglePlay()" class="w-12 h-12 rounded-full bg-gradient-to-r from-accent to-accent-end text-white flex items-center justify-center hover:opacity-90 transition-opacity">
+                <svg id="play-icon" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                </svg>
+            </button>
+            <button onclick="resetScroll()" class="p-2 rounded-lg hover:bg-secondary transition-colors" title="Reset">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="flex-1 flex items-center space-x-4">
+            <div class="flex-1">
+                <label class="text-xs text-text-secondary mb-1 block">Speed</label>
+                <input type="range" id="speed-slider" min="10" max="100" value="{{ script.scroll_speed }}" 
+                       class="w-full accent-accent" oninput="updateSpeed(this.value)">
+            </div>
+            <div class="text-center">
+                <span id="speed-display" class="text-2xl font-bold gradient-text">{{ script.scroll_speed }}%</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+            <button onclick="adjustFontSize(-4)" class="p-2 rounded-lg hover:bg-secondary transition-colors">A-</button>
+            <span id="font-size-display" class="text-sm font-medium w-12 text-center">{{ script.font_size }}px</span>
+            <button onclick="adjustFontSize(4)" class="p-2 rounded-lg hover:bg-secondary transition-colors">A+</button>
+        </div>
+        
+        <button onclick="toggleFocusMode()" class="p-2 rounded-lg hover:bg-secondary transition-colors" title="Focus Mode">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Teleprompter Display -->
+    <div id="teleprompter-container" class="flex-1 rounded-2xl bg-secondary border border-border overflow-hidden relative">
+        <div id="teleprompter" class="p-8 md:p-12 lg:p-16 text-white overflow-y-auto h-full" 
+             style="font-size: {{ script.font_size }}px; line-height: {{ script.line_height }};">
+            {{ script.content|replace('\n', '<br>')|safe }}
+        </div>
+        
+        <!-- Reading Line -->
+        <div id="reading-line" class="absolute left-0 right-0 top-1/2 pointer-events-none">
+            <div class="h-px bg-gradient-to-r from-transparent via-accent to-transparent opacity-50"></div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="absolute bottom-0 left-0 right-0 h-1 bg-border">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-accent to-accent-end transition-all duration-100" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <!-- Bottom Stats -->
+    <div class="flex items-center justify-between mt-4 text-sm text-text-secondary">
+        <span id="word-position">Word 0 of {{ script.word_count }}</span>
+        <span id="time-remaining">0:00 remaining</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+    const teleprompter = document.getElementById('teleprompter');
+    const container = document.getElementById('teleprompter-container');
+    const playBtn = document.getElementById('play-btn');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const speedSlider = document.getElementById('speed-slider');
+    const speedDisplay = document.getElementById('speed-display');
+    const progressBar = document.getElementById('progress-bar');
+    const wordPosition = document.getElementById('word-position');
+    const timeRemaining = document.getElementById('time-remaining');
+    
+    let isPlaying = false;
+    let animationId = null;
+    let currentPosition = 0;
+    let baseSpeed = {{ script.scroll_speed }};
+    let currentSpeed = baseSpeed;
+    let currentFontSize = {{ script.font_size }};
+    let words = '{{ script.content|replace("'", "\\'")|safe }}'.split(/\s+/).filter(w => w.length > 0);
+    let totalWords = words.length;
+    let wordsPerMinute = 150;
+    
+    function togglePlay() {
+        isPlaying = !isPlaying;
+        
+        if (isPlaying) {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+            startScrolling();
+            requestWakeLock();
+        } else {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            stopScrolling();
+        }
+    }
+    
+    function startScrolling() {
+        let lastTime = performance.now();
+        
+        function animate(currentTime) {
+            if (!isPlaying) return;
+            
+            const delta = currentTime - lastTime;
+            lastTime = currentTime;
+            
+            // Calculate scroll amount based on speed
+            const pixelsPerMs = currentSpeed * 0.5;
+            currentPosition += pixelsPerMs * delta * 0.001;
+            
+            teleprompter.scrollTop = currentPosition;
+            
+            // Update progress
+            const maxScroll = teleprompter.scrollHeight - teleprompter.clientHeight;
+            const progress = maxScroll > 0 ? (currentPosition / maxScroll) * 100 : 0;
+            progressBar.style.width = `${Math.min(100, progress)}%`;
+            
+            // Update word position
+            const wordsScrolled = Math.floor((progress / 100) * totalWords);
+            wordPosition.textContent = `Word ${wordsScrolled} of ${totalWords}`;
+            
+            // Update time remaining
+            const wordsRemaining = totalWords - wordsScrolled;
+            const minutesRemaining = wordsRemaining / wordsPerMinute;
+            const secondsRemaining = Math.floor(minutesRemaining * 60);
+            timeRemaining.textContent = `${Math.floor(secondsRemaining / 60)}:${(secondsRemaining % 60).toString().padStart(2, '0')} remaining`;
+            
+            // Stop at end
+            if (currentPosition >= maxScroll) {
+                togglePlay();
+                showToast('Script completed!', 'success');
+            }
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    function stopScrolling() {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+    }
+    
+    function resetScroll() {
+        stopScrolling();
+        currentPosition = 0;
+        teleprompter.scrollTop = 0;
+        progressBar.style.width = '0%';
+        wordPosition.textContent = `Word 0 of ${totalWords}`;
+        timeRemaining.textContent = `${Math.floor(totalWords / wordsPerMinute)}:00 remaining`;
+        
+        if (isPlaying) {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            isPlaying = false;
+        }
+    }
+    
+    function updateSpeed(value) {
+        currentSpeed = parseInt(value);
+        speedDisplay.textContent = `${value}%`;
+        
+        // Save to script settings
+        fetch(`/api/scripts/{{ script.id }}/settings`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scroll_speed: currentSpeed })
+        });
+    }
+    
+    function adjustFontSize(delta) {
+        currentFontSize = Math.max(16, Math.min(64, currentFontSize + delta));
+        teleprompter.style.fontSize = `${currentFontSize}px`;
+        document.getElementById('font-size-display').textContent = `${currentFontSize}px`;
+        
+        // Save to script settings
+        fetch(`/api/scripts/{{ script.id }}/settings`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ font_size: currentFontSize })
+        });
+    }
+    
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            container.requestFullscreen().catch(err => {
+                showToast('Fullscreen not available', 'error');
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+    
+    function toggleFocusMode() {
+        document.body.classList.toggle('focus-mode');
+        showToast('Focus mode toggled', 'info');
+    }
+    
+    // Wake Lock API for keeping screen on
+    let wakeLock = null;
+    
+    async function requestWakeLock() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+            }
+        } catch (err) {
+            console.log('Wake Lock error:', err);
+        }
+    }
+    
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+        switch(e.key) {
+            case ' ':
+                e.preventDefault();
+                togglePlay();
+                break;
+            case 'ArrowUp':
+            case 'w':
+                currentSpeed = Math.min(100, currentSpeed + 5);
+                speedSlider.value = currentSpeed;
+                updateSpeed(currentSpeed);
+                break;
+            case 'ArrowDown':
+            case 's':
+                currentSpeed = Math.max(10, currentSpeed - 5);
+                speedSlider.value = currentSpeed;
+                updateSpeed(currentSpeed);
+                break;
+            case 'Escape':
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+                break;
+        }
+    });
+    
+    // Initialize
+    resetScroll();
+</script>
+{% endblock %}
