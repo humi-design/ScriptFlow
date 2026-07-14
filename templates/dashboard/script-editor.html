@@ -702,7 +702,7 @@ function startScrolling() {
         lastTime = currentTime;
         
         // Calculate scroll amount (pixels per second = baseSpeed * speedMultiplier * deltaTime / 1000)
-        const baseSpeed = currentSpeed * 0.5;
+        const baseSpeed = currentSpeed * 3;
         const scrollAmount = (baseSpeed * deltaTime) / 1000;
         
         lastScrollPosition += scrollAmount;
@@ -1297,3 +1297,109 @@ function stopRecording() {
 }
 </script>
 {% endblock %}
+
+<!-- Standalone Teleprompter Mode (Fullscreen Recording) -->
+<script>
+// Enhanced teleprompter with auto-start and fullscreen
+function startTeleprompterFullscreen() {
+    startTeleprompter();
+    
+    // Auto-start scrolling after short delay
+    setTimeout(() => {
+        togglePlay();
+    }, 1000);
+    
+    // Request fullscreen
+    if (tpModal.requestFullscreen) {
+        tpModal.requestFullscreen().catch(() => {});
+    } else if (tpModal.webkitRequestFullscreen) {
+        tpModal.webkitRequestFullscreen();
+    }
+    
+    // Hide controls after 3 seconds
+    setTimeout(() => {
+        if (isPlaying) {
+            controlBar.style.opacity = '0.1';
+            scrollIndicator.style.opacity = '0.1';
+        }
+    }, 3000);
+}
+
+// Toggle fullscreen
+function toggleFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (tpModal.requestFullscreen) {
+            tpModal.requestFullscreen();
+        } else if (tpModal.webkitRequestFullscreen) {
+            tpModal.webkitRequestFullscreen();
+        }
+        isFullscreen = true;
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+        isFullscreen = false;
+    }
+}
+
+// Show controls on mouse move
+document.addEventListener('mousemove', () => {
+    if (isPlaying) {
+        controlBar.style.opacity = '1';
+        scrollIndicator.style.opacity = '1';
+        clearTimeout(controlBar._hideTimeout);
+        controlBar._hideTimeout = setTimeout(() => {
+            if (isPlaying) {
+                controlBar.style.opacity = '0.1';
+                scrollIndicator.style.opacity = '0.1';
+            }
+        }, 2000);
+    }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (!tpModal || tpModal.classList.contains('hidden')) return;
+    
+    switch(e.key) {
+        case ' ':
+            e.preventDefault();
+            togglePlay();
+            break;
+        case 'ArrowUp':
+            e.preventDefault();
+            restartScroll();
+            break;
+        case 'ArrowDown':
+            e.preventDefault();
+            restartScroll();
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            adjustSpeed(-10);
+            break;
+        case 'ArrowRight':
+            e.preventDefault();
+            adjustSpeed(10);
+            break;
+        case '+':
+        case '=':
+            e.preventDefault();
+            adjustFontSize(4);
+            break;
+        case '-':
+            e.preventDefault();
+            adjustFontSize(-4);
+            break;
+        case 'Escape':
+            closeTeleprompter();
+            break;
+        case 'f':
+        case 'F':
+            toggleFullscreen();
+            break;
+    }
+});
+</script>

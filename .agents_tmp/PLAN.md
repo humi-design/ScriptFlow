@@ -1,221 +1,147 @@
-# Upload ScriptFlow to cPanel - Complete Guide
+# ScriptFlow - User Guide (How to Use)
 
-## 1. OBJECTIVE
-Provide a comprehensive step-by-step guide to upload and deploy the ScriptFlow web application on a cPanel-hosted server.
+## 1. WHAT IS SCRIPTFLOW?
 
-## 2. CONTEXT SUMMARY
-- **Project:** ScriptFlow (appears to be a web application)
-- **Deployment Target:** cPanel hosting environment
-- **Required Access:** cPanel credentials, domain configured, file manager or FTP access
-- **Common Methods:** File Manager, FTP, SSH (if available)
-
-## 3. APPROACH OVERVIEW
-This guide covers the most reliable method using **cPanel File Manager** (no FTP setup required), plus alternative methods for different scenarios.
+**ScriptFlow** is a teleprompter app for content creators. It helps you:
+- ✅ Write and organize scripts for videos
+- ✅ Read scripts smoothly while recording (teleprompter mode)
+- ✅ Maintain eye contact with your camera
+- ✅ Never forget your lines!
 
 ---
 
-## 4. IMPLEMENTATION STEPS
+## 2. HOW TO USE SCRIPTFLOW
 
-### Phase 1: Prepare Your Project Files
+### Step 1: Create an Account
 
-**Step 1: Gather all project files**
-- Locate your complete ScriptFlow project on your local machine
-- Ensure all necessary files are included:
-  - `routes/` folder
-  - `static/` folder (CSS, JS, images, fonts)
-  - `tests/` folder (if needed for deployment)
-  - Any configuration files (`app.yaml`, `.env`, etc.)
-  - Main application entry point
-
-**Step 2: Create a deployment-ready archive (optional but recommended)**
-- Zip all project files into a single archive: `scriptflow-deploy.zip`
-- This makes upload faster and prevents file-by-file errors
+1. Go to your ScriptFlow website
+2. Click **"Get Started"** or **"Sign Up"**
+3. Fill in your details:
+   - First Name
+   - Last Name
+   - Email
+   - Password (min 8 characters)
+4. Click **"Create Account"**
+5. Check your email for verification (if enabled)
 
 ---
 
-### Phase 2: Access cPanel
+### Step 2: Log In
 
-**Step 3: Log into cPanel**
-1. Open your browser and go to: `https://yourdomain.com/cpanel` or `https://yourdomain.com:2083`
-2. Enter your cPanel username and password
-3. Click **Log In**
-
-**Step 4: Locate File Manager**
-- From the cPanel dashboard, find the **Files** section
-- Click on **File Manager**
+1. Go to the login page
+2. Enter your email and password
+3. Click **"Sign In"**
 
 ---
 
-### Phase 3: Upload Using File Manager
+### Step 3: Create Your First Script
 
-**Step 5: Navigate to the correct directory**
-The destination depends on your project type:
-- **For primary domain (yourdomain.com):** Navigate to `public_html/`
-- **For subdomain (sub.yourdomain.com):** Navigate to `/public_html/sub/` or the subdomain's root
-- **For addon domain:** Navigate to its designated directory
-
-**Step 6: Upload the archive**
-1. In File Manager, click **Upload** button (top menu)
-2. A new tab/window opens
-3. Drag and drop your `scriptflow-deploy.zip` file OR click **Select File** to browse
-4. Wait for upload to complete (progress bar shows status)
-5. Close the upload tab and return to File Manager
-
-**Step 7: Extract the archive**
-1. Locate `scriptflow-deploy.zip` in the directory
-2. Right-click on the file → select **Extract**
-3. Choose the extraction destination (usually the same directory)
-4. Click **Extract File(s)**
-5. Verify files appear in the correct location
-
-**Step 8: Verify file structure**
-- After extraction, confirm:
-  - Entry point files (`index.php`, `index.html`, `app.py`, etc.) are directly in `public_html/`
-  - Subfolders (`static/`, `routes/`) are accessible and not nested incorrectly
+1. After logging in, go to your **Dashboard**
+2. Click **"New Script"** or **"Create Script"**
+3. **Enter a title:** (e.g., "My YouTube Video Introduction")
+4. **Paste your script text** in the big text box
+   - This is where you write what you want to say on camera!
+5. See word count and estimated reading time automatically
+6. Click **"Create Script"**
 
 ---
 
-### Phase 4: Alternative Upload Methods
+### Step 4: View & Edit Your Scripts
 
-#### Method B: FTP Upload
-1. **Get FTP credentials** from cPanel → FTP Accounts
-2. **Use an FTP client** (FileZilla, Cyberduck, or similar)
-3. **Connect using:**
-   - Host: `ftp.yourdomain.com` or your server's IP
-   - Username: Your FTP username
-   - Password: Your FTP password
-   - Port: 21 (or 22 for SFTP)
-4. **Navigate** to `public_html/`
-5. **Upload** all project files/folders
-6. Wait for transfer to complete
-
-#### Method C: SSH Upload (if enabled)
-1. **Enable SSH** in cPanel → Terminal (or request from host)
-2. **Connect via terminal:**
-   ```bash
-   ssh username@yourdomain.com
-   ```
-3. **Navigate to web root:**
-   ```bash
-   cd public_html
-   ```
-4. **Use SCP or SFTP to upload:**
-   ```bash
-   # From your local machine:
-   scp -r ./scriptflow-project/* username@yourdomain.com:~/public_html/
-   ```
+1. Go to **"My Scripts"** or **"Scripts"** section
+2. You'll see all your saved scripts
+3. Click on a script to:
+   - **View** - Read your script
+   - **Edit** - Make changes
+   - **Delete** - Remove a script
 
 ---
 
-### Phase 5: Configure Your Application
+### Step 5: Use Teleprompter Mode (The Main Feature!)
 
-**Step 9: Set correct file permissions**
-- **Folders:** 755 (drwxr-xr-x)
-- **Files:** 644 (-rw-r--r--)
-- In File Manager: Right-click file/folder → **Change Permissions**
+**This is where the magic happens:**
 
-**Step 10: Configure database (if required)**
-- Go to **cPanel → MySQL Databases**
-- Create a database, user, and password
-- Note the credentials for your app config
+1. Open your script
+2. Look for **"Teleprompter"** or **"Start Reading"** button
+3. Click it to start the teleprompter view
+4. **Features typically include:**
+   - 📜 Scrolling text (auto-scroll at your pace)
+   - ⏱️ Adjustable scroll speed
+   - 🔤 Adjustable font size (big enough to read from camera)
+   - ⏸️ Play/Pause controls
+   - 🎯 Mirror mode (if recording with reflection)
 
-**Step 11: Update configuration files**
-- Edit your app config (`.env`, `config.php`, `settings.py`, etc.)
-- Update database credentials
-- Set correct domain URLs
-- Update any absolute paths
-
-**Step 12: Set up Python/Node environment (if applicable)**
-For Python apps:
-1. Go to **cPanel → Setup Python App**
-2. Create a Python application
-3. Set the application root to your project folder
-4. Configure virtual environment if needed
-5. Install dependencies via **PyPI** or `requirements.txt`
-
-For Node.js apps:
-1. Use **cPanel → Node.js App** (if available)
-2. Or use terminal to run npm commands
+5. Position your browser window/second screen next to your camera
+6. Hit record on your camera
+7. Press play on ScriptFlow teleprompter
+8. Read naturally while maintaining eye contact!
 
 ---
 
-### Phase 6: Domain & SSL Configuration
+## 3. SCRIPT WRITING TIPS
 
-**Step 13: Configure domain**
-- Ensure your domain points to cPanel nameservers
-- Check in cPanel → **Domains** → **Zone Editor**
-- Allow 24-48 hours for DNS propagation if new
+### For Better Teleprompter Reading:
 
-**Step 14: Enable SSL/HTTPS**
-1. Go to **cPanel → SSL/TLS**
-2. Click **Manage SSL Sites**
-3. Install certificate for your domain (Let's Encrypt is free)
-4. Or use **AutoSSL** for automatic HTTPS
+| Tip | Why It Helps |
+|-----|--------------|
+| Use short sentences | Easier to say naturally |
+| Add punctuation pauses | Natural breathing points |
+| Write like you speak | More authentic delivery |
+| Break into paragraphs | Visual cues for new topics |
+| Highlight key words | Reminder of emphasis |
 
-**Step 15: Force HTTPS redirect (optional)**
-Add to `.htaccess` (for Apache):
-```apache
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+### Example Script Format:
+```
+Hey everyone! Welcome back to my channel.
+
+Today, I want to share something that changed my life...
+
+[Continue with your content...]
 ```
 
 ---
 
-## 5. TESTING AND VALIDATION
+## 4. QUICK REFERENCE
 
-### Verify Deployment Success
+### Dashboard Features:
+- 📝 **New Script** - Create fresh content
+- 📚 **My Scripts** - View all your scripts
+- ⚙️ **Settings** - Customize your account
+- 👤 **Profile** - Update your info
 
-1. **Clear browser cache** and cookies
-2. **Visit your domain:** `https://yourdomain.com`
-3. **Check for:**
-   - ✅ Page loads without 500/403 errors
-   - ✅ Static assets (CSS, JS, images) load correctly
-   - ✅ Database connections work (if applicable)
-   - ✅ Forms and interactive elements function
-   - ✅ HTTPS is working (green lock icon in browser)
-
-### Common Issues & Fixes
-
-| Issue | Solution |
-|-------|----------|
-| 403 Forbidden | Check file permissions (755 folders, 644 files) |
-| 500 Internal Server Error | Check `.htaccess` syntax, PHP version compatibility |
-| Database connection failed | Verify database credentials in config |
-| CSS/JS not loading | Check file paths, clear cache |
-| SSL warning | Reinstall certificate or use AutoSSL |
-
-### Post-Deployment Checklist
-- [ ] Files uploaded to correct directory
-- [ ] Permissions set correctly
-- [ ] Database configured (if applicable)
-- [ ] Environment variables set
-- [ ] SSL certificate active
-- [ ] Site accessible via HTTPS
-- [ ] Test critical user flows
-- [ ] Monitor error logs in cPanel
+### Teleprompter Controls:
+- ▶️ **Play/Pause** - Control scrolling
+- ⏩ **Speed** - Adjust scroll rate
+- 🔤 **Font Size** - Make text bigger/smaller
+- 🪞 **Mirror** - Flip text for reflections
 
 ---
 
-## Quick Reference: cPanel File Manager Upload Flow
+## 5. COMMON QUESTIONS
 
-```
-1. Log into cPanel
-2. Open File Manager
-3. Navigate to public_html/
-4. Upload ZIP file
-5. Extract ZIP
-6. Verify file structure
-7. Set permissions (755 folders, 644 files)
-8. Configure database if needed
-9. Update app configuration
-10. Test your site!
-```
+**Q: Is my script saved automatically?**
+A: Yes! Scripts are saved to your account when you click "Create" or "Save".
+
+**Q: Can I use ScriptFlow on my phone?**
+A: Yes! It's a web app - works on any device with a browser.
+
+**Q: How long should my script be?**
+A: For videos: ~150 words = 1 minute of speaking
+
+**Q: Can I edit scripts after creating?**
+A: Yes! Click on any script and use the edit option.
 
 ---
 
-**Questions that would help customize this guide:**
-1. What type of application is ScriptFlow? (PHP, Python/Flask, Node.js, static HTML?)
-2. Do you need a database? (MySQL, PostgreSQL, MongoDB?)
-3. Do you have cPanel access credentials ready?
-4. Is this a new domain/subdomain, or updating existing deployment?
+## 6. GETTING STARTED CHECKLIST
+
+- [ ] Create account
+- [ ] Log in
+- [ ] Create first script
+- [ ] Write what you want to say
+- [ ] Test teleprompter mode
+- [ ] Record your first video!
+
+---
+
+**Need help?** Check the Settings page or contact support for assistance!
