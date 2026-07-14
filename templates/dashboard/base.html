@@ -312,4 +312,28 @@
     // Global search
     document.getElementById('global-search')?.addEventListener('focus', openCommandPalette);
 </script>
+
+<!-- PWA Install Banner -->
+<div id="pwa-install-banner" class="hidden fixed bottom-6 left-6 right-6 md:left-auto md:right-6 md:w-96 p-4 rounded-2xl bg-card border border-border shadow-2xl z-50">
+    <button onclick="dismissInstallBanner()" class="absolute top-2 right-2 p-2 hover:bg-secondary rounded-lg transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+    <div class="flex items-center space-x-3 mb-3">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent to-accent-end flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 100 100" fill="none">
+                <path d="M30 35h40M30 50h30M30 65h35" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div>
+            <h4 class="font-semibold">Install ScriptFlow</h4>
+            <p class="text-sm text-text-secondary">Add to home screen for best experience</p>
+        </div>
+    </div>
+    <button onclick="installPWA()" class="w-full py-2.5 bg-gradient-to-r from-accent to-accent-end text-white font-medium rounded-xl hover:opacity-90 transition-opacity">
+        Install App
+    </button>
+</div>
+
 {% endblock %}

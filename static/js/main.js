@@ -481,3 +481,39 @@
     window.toggleCommandPalette = toggleCommandPalette;
     
 })();
+
+// PWA Install Prompt
+let deferredPrompt;
+const installBanner = document.getElementById('pwa-install-banner');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install banner
+    if (installBanner) {
+        installBanner.classList.remove('hidden');
+        installBanner.classList.add('flex');
+    }
+});
+
+function installPWA() {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted PWA install');
+        }
+        deferredPrompt = null;
+        if (installBanner) {
+            installBanner.classList.add('hidden');
+        }
+    });
+}
+
+function dismissInstallBanner() {
+    if (installBanner) {
+        installBanner.classList.add('hidden');
+    }
+}
