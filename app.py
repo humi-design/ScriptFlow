@@ -14,15 +14,8 @@ def create_app(config_name='production'):
     app = Flask(__name__)
     
     # Load configuration
-    if config_name == 'production' or config_name is None:
-        from config import ProductionConfig
-        app.config.from_object(ProductionConfig)
-    elif config_name == 'development':
-        from config import DevelopmentConfig
-        app.config.from_object(DevelopmentConfig)
-    else:
-        from config import ProductionConfig
-        app.config.from_object(ProductionConfig)
+    from config import ProductionConfig
+    app.config.from_object(ProductionConfig)
     
     # Initialize extensions
     db.init_app(app)
@@ -55,6 +48,18 @@ def create_app(config_name='production'):
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(admin_bp)
     
+    # Custom Jinja2 filters
+    @app.template_filter('format_number')
+    def format_number(value):
+        if value is None:
+            return '0'
+        value = int(value)
+        if value >= 1000000:
+            return f"{value/1000000:.1f}M"
+        elif value >= 1000:
+            return f"{value/1000:.1f}K"
+        return str(value)
+    
     # Error handlers
     @app.errorhandler(404)
     def not_found_error(error):
@@ -74,5 +79,5 @@ def create_app(config_name='production'):
 
 
 if __name__ == '__main__':
-    app = create_app('development')
+    app = create_app()
     app.run(host='0.0.0.0', port=5000, debug=True)
