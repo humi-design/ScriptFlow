@@ -1,8 +1,8 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -47,11 +47,6 @@ def create_app(config_name='production'):
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(admin_bp)
-    
-    # Expose csrf_token to all templates
-    @app.context_processor
-    def inject_csrf_token():
-        return dict(csrf_token=generate_csrf)
     
     # Custom Jinja2 filters
     @app.template_filter('format_number')

@@ -19,7 +19,7 @@
     
     <!-- Form -->
     <form id="script-form" method="POST" action="{{ url_for('dashboard.create_script') }}" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="csrf_token" value="{{ session.get('_csrf_token') }}">
         <div>
             <label class="block text-sm font-medium mb-2">Script Title</label>
             <input type="text" name="title" id="title" required
