@@ -44,7 +44,7 @@
             {% endwith %}
             
             <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-5">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="csrf_token" value="{{ session.get('_csrf_token') }}">
                 
                 <div>
                     <label class="block text-sm font-medium mb-2">Email</label>

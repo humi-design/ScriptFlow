@@ -44,7 +44,7 @@
             {% endwith %}
             
             <form method="POST" action="{{ url_for('auth.register') }}" class="space-y-4">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="csrf_token" value="{{ session.get('_csrf_token') }}">
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
