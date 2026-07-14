@@ -1,14 +1,15 @@
-import sys
 import os
+import sys
+
+# Ensure instance directory exists
+instance_dir = os.path.join(os.path.dirname(__file__), 'instance')
+if not os.path.exists(instance_dir):
+    os.makedirs(instance_dir)
 
 # Add current directory to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(__file__))
 
-# Import Flask app using importlib for compatibility
-from importlib import import_module
+# Create Flask application
+from app import create_app
 
-# Import the app module
-app_module = import_module('app')
-
-# Get the Flask application
-application = app_module.create_app('production')
+application = create_app('production')
