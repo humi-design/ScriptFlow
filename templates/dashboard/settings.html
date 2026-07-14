@@ -5,14 +5,14 @@
 {% block dashboard_content %}
 <div class="max-w-4xl mx-auto">
     <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold mb-2">Settings</h1>
+    <div class="mb-6 sm:mb-8">
+        <h1 class="text-2xl sm:text-3xl font-bold mb-2">Settings</h1>
         <p class="text-text-secondary">Customize your ScriptFlow experience</p>
     </div>
     
-    <div class="flex gap-8">
+    <div class="flex flex-col lg:flex-row gap-4 lg:gap-8">
         <!-- Settings Navigation -->
-        <nav class="settings-nav w-56 flex-shrink-0 hidden lg:block">
+        <nav class="settings-nav w-full lg:w-56 flex-shrink-0 hidden lg:block">
             <div class="sticky top-24 space-y-1">
                 <button onclick="showSection('general')" class="settings-nav-btn w-full text-left px-4 py-3 rounded-xl hover:bg-card transition-colors flex items-center space-x-3" data-section="general">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,11 +74,11 @@
         </nav>
         
         <!-- Settings Content -->
-        <div class="flex-1 space-y-8">
+        <div class="flex-1 space-y-4 sm:space-y-6 lg:space-y-8">
             <!-- General Settings -->
             <section id="section-general" class="settings-section">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">General</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">General</h2>
                     <div class="space-y-6">
                         <div class="flex items-center justify-between">
                             <div>
@@ -126,8 +126,8 @@
             
             <!-- Appearance Settings -->
             <section id="section-appearance" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">Appearance</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Appearance</h2>
                     
                     <div class="mb-6">
                         <h3 class="font-medium mb-4">Theme</h3>
@@ -189,8 +189,8 @@
             
             <!-- Teleprompter Settings -->
             <section id="section-teleprompter" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">Teleprompter</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Teleprompter</h2>
                     <div class="space-y-6">
                         <div>
                             <div class="flex justify-between mb-2">
@@ -275,8 +275,8 @@
             
             <!-- Gesture Settings -->
             <section id="section-gestures" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">Gestures</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Gestures</h2>
                     <div class="space-y-6">
                         <div class="flex items-center justify-between">
                             <div>
@@ -303,8 +303,8 @@
             
             <!-- Storage Settings -->
             <section id="section-storage" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">Storage</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Storage</h2>
                     <div class="space-y-6">
                         <div class="p-4 rounded-xl bg-secondary border border-border">
                             <div class="flex items-center justify-between mb-2">
@@ -347,8 +347,8 @@
             
             <!-- Backup Settings -->
             <section id="section-backup" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">Backup & Export</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Backup & Export</h2>
                     <div class="space-y-6">
                         <div class="grid grid-cols-2 gap-4">
                             <button onclick="exportData('json')" class="p-4 rounded-xl border border-border hover:bg-secondary transition-colors text-left">
@@ -390,8 +390,8 @@
             
             <!-- Account Settings -->
             <section id="section-account" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">Account</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Account</h2>
                     <div class="space-y-6">
                         <div class="flex items-center space-x-4 p-4 rounded-xl bg-secondary border border-border">
                             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-accent to-accent-end flex items-center justify-center text-2xl font-bold">
@@ -436,8 +436,8 @@
             
             <!-- About Section -->
             <section id="section-about" class="settings-section hidden">
-                <div class="p-8 rounded-3xl bg-card border border-border">
-                    <h2 class="text-xl font-semibold mb-6">About ScriptFlow</h2>
+                <div class="p-4 sm:p-6 lg:p-8 rounded-2xl lg:rounded-3xl bg-card border border-border">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">About ScriptFlow</h2>
                     <div class="text-center py-8">
                         <svg class="w-20 h-20 mx-auto mb-4" viewBox="0 0 100 100" fill="none">
                             <defs>

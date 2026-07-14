@@ -79,34 +79,34 @@
         <div class="relative z-10 max-w-7xl mx-auto px-6 py-20">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
                 <div class="text-center lg:text-left">
-                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
                         <span class="gradient-text glow-text">Speak Naturally.</span><br>
                         <span class="text-white">Never Lose</span><br>
                         <span class="text-white">Eye Contact.</span>
                     </h1>
-                    <p class="text-xl text-text-secondary mb-8 max-w-lg mx-auto lg:mx-0">
+                    <p class="text-lg sm:text-xl text-text-secondary mb-8 max-w-lg mx-auto lg:mx-0">
                         The world's most beautiful AI-ready creator platform with an advanced teleprompter. Record videos with confidence.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="{{ url_for('auth.register') }}" class="px-8 py-4 bg-gradient-to-r from-accent to-accent-end text-white font-semibold rounded-2xl hover:opacity-90 transition-all hover:scale-105 text-center">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+                        <a href="{{ url_for('auth.register') }}" class="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-accent to-accent-end text-white font-semibold rounded-xl sm:rounded-2xl hover:opacity-90 transition-all hover:scale-105 text-center text-sm sm:text-base">
                             Start Free
                         </a>
-                        <a href="#demo" class="px-8 py-4 border border-border text-white font-semibold rounded-2xl hover:bg-card transition-all text-center">
+                        <a href="#demo" class="px-6 sm:px-8 py-3 sm:py-4 border border-border text-white font-semibold rounded-xl sm:rounded-2xl hover:bg-card transition-all text-center text-sm sm:text-base">
                             Watch Demo
                         </a>
                     </div>
                 </div>
                 
                 <!-- Phone Mockup -->
-                <div class="relative mx-auto lg:mx-0">
-                    <div class="relative w-72 md:w-80 mx-auto">
+                <div class="relative mx-auto lg:mx-0 mt-12 lg:mt-0">
+                    <div class="relative w-64 sm:w-72 md:w-80 mx-auto">
                         <div class="absolute inset-0 bg-gradient-to-r from-accent to-accent-end blur-3xl opacity-30 rounded-full"></div>
-                        <div class="relative bg-black rounded-[3rem] p-3 border border-border shadow-2xl">
-                            <div class="bg-secondary rounded-[2.5rem] overflow-hidden">
-                                <div class="h-8 bg-black rounded-b-2xl flex items-center justify-center">
-                                    <div class="w-20 h-6 bg-black rounded-full"></div>
+                        <div class="relative bg-black rounded-[2rem] sm:rounded-[3rem] p-2 sm:p-3 border border-border shadow-2xl">
+                            <div class="bg-secondary rounded-[1.7rem] sm:rounded-[2.5rem] overflow-hidden">
+                                <div class="h-6 sm:h-8 bg-black rounded-b-2xl flex items-center justify-center">
+                                    <div class="w-16 sm:w-20 h-4 sm:h-6 bg-black rounded-full"></div>
                                 </div>
-                                <div class="p-6 h-[500px] overflow-hidden relative">
+                                <div class="p-4 sm:p-6 h-[400px] sm:h-[500px] overflow-hidden relative">
                                     <div id="promo-teleprompter" class="font-medium text-2xl leading-relaxed text-white">
                                         <p class="mb-8">Welcome to ScriptFlow, the teleprompter that helps you speak naturally while maintaining perfect eye contact with your camera.</p>
                                         <p class="mb-8">No more memorizing scripts or looking away. Just paste your script, tap start, and let the words flow naturally.</p>
@@ -126,25 +126,25 @@
     <!-- Features Section -->
     <section id="features" class="py-32 relative">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+            <div class="text-center mb-10 sm:mb-16">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
                     <span class="gradient-text">Premium Features</span>
                 </h2>
-                <p class="text-xl text-text-secondary max-w-2xl mx-auto">
+                <p class="text-base sm:text-lg md:text-xl text-text-secondary max-w-2xl mx-auto px-4">
                     Everything you need to create professional content with confidence.
                 </p>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Feature Card 1 -->
-                <div class="feature-card group p-8 rounded-3xl bg-card border border-border hover:border-accent/50 transition-all duration-300 hover:-translate-y-1">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent-end/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="feature-card group p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-card border border-border hover:border-accent/50 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-accent/20 to-accent-end/20 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold mb-3">Ultra Smooth Scrolling</h3>
-                    <p class="text-text-secondary">GPU-accelerated scrolling at 60 FPS. Adjustable speed from slow to fast for perfect pacing.</p>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Ultra Smooth Scrolling</h3>
+                    <p class="text-sm sm:text-base text-text-secondary">GPU-accelerated scrolling at 60 FPS. Adjustable speed from slow to fast for perfect pacing.</p>
                 </div>
                 
                 <!-- Feature Card 2 -->
@@ -719,7 +719,22 @@
     
     // Mobile menu toggle
     document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
-        // Mobile menu implementation would go here
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        
+        menu.classList.toggle('hidden');
+        openIcon.classList.toggle('hidden');
+        closeIcon.classList.toggle('hidden');
+        
+        // Close menu when clicking a link
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+                openIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            });
+        });
     });
     
     // Smooth scroll for anchor links

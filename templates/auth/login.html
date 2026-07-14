@@ -3,7 +3,7 @@
 {% block title %}Login - ScriptFlow{% endblock %}
 
 {% block body %}
-<div class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+<div class="min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
     <!-- Background Effects -->
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse"></div>
@@ -29,9 +29,9 @@
         </div>
         
         <!-- Login Card -->
-        <div class="p-8 rounded-3xl bg-card/80 glass border border-border">
-            <h1 class="text-2xl font-bold text-center mb-2">Welcome Back</h1>
-            <p class="text-text-secondary text-center mb-8">Sign in to continue to your dashboard</p>
+        <div class="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-card/80 glass border border-border">
+            <h1 class="text-xl sm:text-2xl font-bold text-center mb-2">Welcome Back</h1>
+            <p class="text-text-secondary text-center mb-6 sm:mb-8">Sign in to continue to your dashboard</p>
             
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
