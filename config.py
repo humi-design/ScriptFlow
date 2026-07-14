@@ -4,16 +4,7 @@ from datetime import timedelta
 
 class Config:
     """Base configuration"""
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'scriptflow-dev-key-change-in-production')
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    
-    # Ensure instance directory exists
-    instance_dir = os.path.join(BASE_DIR, 'instance')
-    if not os.path.exists(instance_dir):
-        os.makedirs(instance_dir)
-    
-    db_path = os.path.join(instance_dir, 'database.db')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', f'sqlite:///{db_path}')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'scriptflow-secret-key-change-this')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
@@ -24,18 +15,35 @@ class Config:
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
     
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
 
 class DevelopmentConfig(Config):
     """Development configuration"""
     DEBUG = True
     SESSION_COOKIE_SECURE = False
+    
+    # SQLite for development
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/database.db'
 
 
 class ProductionConfig(Config):
-    """Production configuration"""
+    """Production configuration - Uses MySQL"""
     DEBUG = False
+    
+    # MySQL Database Configuration
+    # Update these values with your cPanel MySQL details
+    MYSQL_HOST = os.environ.get('MYSQL_HOST', 'localhost')
+    MYSQL_PORT = os.environ.get('MYSQL_PORT', '3306')
+    MYSQL_USER = os.environ.get('MYSQL_USER', '')
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', '')
+    MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE', 'scriptflow_db')
+    
+    # Construct MySQL connection string
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@"
+        f"{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}?charset=utf8mb4"
+    )
 
 
 class TestingConfig(Config):
@@ -44,17 +52,9 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
 
-# Config mapping
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
     'testing': TestingConfig,
     'default': DevelopmentConfig
 }
-
-
-def get_config(config_name=None):
-    """Get configuration by name"""
-    if config_name is None:
-        config_name = os.environ.get('FLASK_ENV', 'production')
-    return config.get(config_name, ProductionConfig)

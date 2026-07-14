@@ -5,31 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#090909">
     <meta name="description" content="ScriptFlow - The world's most beautiful AI-ready creator platform with advanced teleprompter">
-    
-    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="ScriptFlow - Speak Naturally. Never Lose Eye Contact.">
     <meta property="og:description" content="The world's most beautiful AI-ready creator platform with an advanced teleprompter.">
-    
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ScriptFlow">
-    <meta name="twitter:description" content="The world's most beautiful teleprompter for creators.">
-    
-    <!-- PWA -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ScriptFlow">
     
-    <!-- CSS Modules -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-    
     <title>{% block title %}ScriptFlow{% endblock %}</title>
     
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea'/%3E%3Cstop offset='100%25' style='stop-color:%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Cpath d='M30 35h40M30 50h30M30 65h35' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea'/%3E%3Cstop offset='100%25' style='stop-color:%23764ba2'/%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Cpath d='M30 35h40M30 50h30M30 65h35' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,15 +44,10 @@
                     fontFamily: {
                         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
                     },
-                    spacing: {
-                        '18': '4.5rem',
-                        '88': '22rem',
-                    },
                     borderRadius: {
                         'xl': '16px',
                         '2xl': '20px',
                         '3xl': '24px',
-                        '4xl': '32px',
                     }
                 }
             }
@@ -76,87 +59,39 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        
         html {
             scroll-behavior: smooth;
         }
-        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #090909;
             color: #FFFFFF;
         }
-        
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-        
         ::-webkit-scrollbar-track {
             background: #111111;
         }
-        
         ::-webkit-scrollbar-thumb {
             background: #2B2B2B;
             border-radius: 4px;
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3B3B3B;
-        }
-        
         .gradient-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        .gradient-border {
-            position: relative;
-            background: #171717;
-        }
-        
-        .gradient-border::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            padding: 1px;
-            border-radius: inherit;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-        }
-        
         .glass {
             background: rgba(23, 23, 23, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
-        
-        .noise {
-            position: relative;
-        }
-        
-        .noise::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: 0.03;
-            pointer-events: none;
-        }
-        
         .glow {
             box-shadow: 0 0 60px rgba(102, 126, 234, 0.3);
         }
-        
-        .glow-text {
-            text-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
-        }
-        
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -164,19 +99,22 @@
                 transition-duration: 0.01ms !important;
             }
         }
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen bg-primary text-white overflow-x-hidden">
-    <!-- Skip Link for Accessibility -->
-    <a href="#main-content" class="skip-link" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
-        Skip to main content
-    </a>
-    
     {% block body %}{% endblock %}
     
-    <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
     
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
