@@ -43,20 +43,25 @@ class AuthService:
     
     @staticmethod
     def create_guest_user():
+        # Generate a unique guest email
+        guest_email = f"guest_{int(datetime.utcnow().timestamp())}@scriptflow.app"
+        
         guest = User(
-            email=f"guest_{datetime.utcnow().timestamp()}@scriptflow.app",
-            password_hash="",
+            email=guest_email,
             first_name="Guest",
             last_name="",
             is_guest=True
         )
+        # Set a random password hash for guests (they can't log in with it)
+        guest.set_password(datetime.utcnow().isoformat())
+        
         db.session.add(guest)
         db.session.commit()
         return guest
     
     @staticmethod
     def get_user_by_id(user_id):
-        return User.query.get(user_id)
+        return db.session.get(User, user_id)
     
     @staticmethod
     def update_user_theme(user, theme):
