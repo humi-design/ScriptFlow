@@ -5,9 +5,9 @@
 {% block dashboard_content %}
 <div class="max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-            <h1 class="text-3xl font-bold mb-2">My Scripts</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2">My Scripts</h1>
             <p class="text-text-secondary">{{ scripts|length }} scripts total</p>
         </div>
         
@@ -20,10 +20,10 @@
     </div>
     
     <!-- Filters & Search -->
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
+    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
         <!-- Search -->
         <div class="relative flex-1">
-            <input type="text" id="search-input" placeholder="Search scripts..." value="{{ search_query }}"
+            <input type="text" id="search-input" placeholder="Search..." value="{{ search_query }}"
                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-card border border-border focus:border-accent focus:outline-none transition-colors">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -32,12 +32,12 @@
         
         <!-- Filter -->
         <div class="flex items-center space-x-2">
-            <select id="filter-select" class="px-4 py-3 rounded-xl bg-card border border-border focus:border-accent focus:outline-none transition-colors">
+            <select id="filter-select" class="px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-card border border-border focus:border-accent focus:outline-none transition-colors text-sm">
                 <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All Scripts</option>
                 <option value="favorites" {% if filter_type == 'favorites' %}selected{% endif %}>Favorites</option>
             </select>
             
-            <select id="sort-select" class="px-4 py-3 rounded-xl bg-card border border-border focus:border-accent focus:outline-none transition-colors">
+            <select id="sort-select" class="px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-card border border-border focus:border-accent focus:outline-none transition-colors text-sm">
                 <option value="updated_at" {% if sort_by == 'updated_at' %}selected{% endif %}>Recently Updated</option>
                 <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title A-Z</option>
                 <option value="word_count" {% if sort_by == 'word_count' %}selected{% endif %}>Word Count</option>
@@ -50,7 +50,7 @@
     {% if scripts %}
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for script in scripts %}
-                <div class="script-card group p-6 rounded-2xl bg-card border border-border hover:border-accent/50 transition-all">
+                <div class="script-card group p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-card border border-border hover:border-accent/50 transition-all">
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex-1 min-w-0">
                             <a href="{{ url_for('dashboard.script_editor', script_id=script.id) }}" class="block">
