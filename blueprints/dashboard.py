@@ -113,4 +113,5 @@ def profile():
 @dashboard_bp.route('/settings')
 @login_required
 def settings():
-    return render_template('dashboard/settings.html')
+    stats = ScriptService.get_statistics(current_user.id)
+    return render_template('dashboard/settings.html', stats=stats)

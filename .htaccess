@@ -1,0 +1,30 @@
+# Passenger Configuration
+ passenger_enabled on
+ passenger_app_root /home/humi/public_html/scriptflow
+ passenger_python /home/humi/venv/bin/python3.11
+ passenger_app_type wsgi
+ passenger_startup_file passenger_wsgi.py
+ 
+# Static files
+<LocationMatch "^/(static|.*\.css|.*\.js|.*\.png|.*\.jpg|.*\.svg|.*\.ico)">
+    PassengerEnabled off
+</LocationMatch>
+
+# Deny access to sensitive files
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# URL rewriting
+RewriteEngine On
+RewriteBase /
+
+# Force HTTPS (optional - remove if not needed)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
