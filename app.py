@@ -48,17 +48,26 @@ def create_app(config_name='production'):
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(admin_bp)
     
+    # Expose csrf_token to all templates
+    @app.context_processor
+    def inject_csrf_token():
+        from flask_wtf.csrf import csrf_token
+        return dict(csrf_token=csrf_token)
+    
     # Custom Jinja2 filters
     @app.template_filter('format_number')
     def format_number(value):
         if value is None:
             return '0'
-        value = int(value)
-        if value >= 1000000:
-            return f"{value/1000000:.1f}M"
-        elif value >= 1000:
-            return f"{value/1000:.1f}K"
-        return str(value)
+        try:
+            value = int(value)
+            if value >= 1000000:
+                return f"{value/1000000:.1f}M"
+            elif value >= 1000:
+                return f"{value/1000:.1f}K"
+        except (ValueError, TypeError):
+            pass
+        return str(value) if value else '0'
     
     # Error handlers
     @app.errorhandler(404)
