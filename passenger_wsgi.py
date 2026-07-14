@@ -1,10 +1,14 @@
 import os
 import sys
 
-# Ensure instance directory exists
-instance_dir = os.path.join(os.path.dirname(__file__), 'instance')
-if not os.path.exists(instance_dir):
-    os.makedirs(instance_dir)
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    env_path = os.path.join(os.path.dirname(__file__), '.env')
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+except ImportError:
+    pass
 
 # Add current directory to Python path
 sys.path.insert(0, os.path.dirname(__file__))
