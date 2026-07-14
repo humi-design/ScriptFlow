@@ -1,12 +1,14 @@
 import sys
 import os
 
-INTERP = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'venv', 'bin', 'python3')
-if sys.executable != INTERP:
-    os.execl(INTERP, INTERP, *sys.argv)
-
+# Add current directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from app import create_app
+# Import Flask app using importlib for compatibility
+from importlib import import_module
 
-application = create_app()
+# Import the app module
+app_module = import_module('app')
+
+# Get the Flask application
+application = app_module.create_app('production')
